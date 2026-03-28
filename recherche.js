@@ -184,18 +184,8 @@ async function rechercherContenus(query) {
         if (data) tousLesResultats = [...tousLesResultats, ...data]
     }
 
-    const articlesLocaux = typeof articles !== 'undefined'
-        ? articles.filter(a =>
-            termes.some(terme =>
-                a.titre.toLowerCase().includes(terme.toLowerCase()) ||
-                a.description.toLowerCase().includes(terme.toLowerCase()) ||
-                a.tag.toLowerCase().includes(terme.toLowerCase())
-            )
-        )
-        : []
-
     const ids = new Set()
-    return [...articlesLocaux, ...tousLesResultats].filter(a => {
+    return [...tousLesResultats].filter(a => {
         const key = a.id || a.titre
         if (ids.has(key)) return false
         ids.add(key)
@@ -253,7 +243,7 @@ function extraireMotsClesAvecIA(query) {
         .filter(m => m.length > 2 && !motsVides.includes(m))
 
     // Corriger les fautes communes
-    const corrections = {
+  const corrections = {
         'inteligence': 'intelligence',
         'artificiell': 'artificielle',
         'aprendere': 'apprendre',
@@ -267,7 +257,33 @@ function extraireMotsClesAvecIA(query) {
         'lerning': 'learning',
         'chatgp': 'ChatGPT',
         'claud': 'Claude',
-    }
+        'technolgie': 'technologie',
+        'technologie': 'technologie',
+        'inteligent': 'intelligent',
+        'artifiel': 'artificiel',
+        'publie': 'publication',
+        'publier': 'publication',
+        'video': 'vidéo',
+        'photo': 'photo',
+        'tuto': 'tutoriel',
+        'astuces': 'astuce',
+        'nouvelles': 'news',
+        'nouvell': 'news',
+        'nouveau': 'nouveauté',
+        'nouveaute': 'nouveauté',
+        'zotech': 'ZoTech',
+        'zotec': 'ZoTech',
+        'android': 'mobile',
+        'iphone': 'mobile',
+        'telephone': 'mobile',
+        'ordi': 'ordinateur',
+        'ordinateur': 'ordinateur',
+        'laptop': 'ordinateur',
+        'internet': 'web',
+        'website': 'site web',
+        'appli': 'application',
+        'logiciel': 'application',
+    } 
 
     const motsCorrigés = mots.map(m => corrections[m] || m)
 
@@ -345,7 +361,7 @@ async function afficherResultatsRecherche(profils, contenus, query) {
 
             return `
                 <div class="search-item-contenu">
-                    <a href="article.html?id=${a.id}" class="search-item" onclick="fermerRecherche()" style="flex:1">
+              <a href="article.html?id=${a.id}&src=supabase" class="search-item" onclick="fermerRecherche()" style="flex:1">      
                         <div class="search-item-avatar" style="background:#1e1e2e;font-size:1.2rem;">
                             ${a.emoji || '📝'}
                         </div>

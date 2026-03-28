@@ -247,14 +247,10 @@ async function afficherArticle() {
         .neq('id', idNum)
         .limit(3)
 
-    const similairesLocaux = articles
-        .filter(a => a.tag === article.tag && a.id !== idNum)
-        .slice(0, 3)
-
-    const tousSimiliaires = [
-        ...similairesLocaux,
+   const tousSimiliaires = [
         ...(similairesSupabase || []).map(a => ({
             ...a,
+            source: 'supabase',
             date: new Date(a.created_at).toLocaleDateString('fr-FR')
         }))
     ].slice(0, 3)
