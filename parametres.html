@@ -224,22 +224,34 @@
             Paramètres
         </div>
 
-        <!-- COMPTE -->
-        <div class="parametres-section">
-            <div class="parametres-section-titre">Compte</div>
-            <div class="parametres-item" onclick="ouvrirChangerMotDePasse()">
-                <div class="parametres-item-gauche">
-                    <div class="parametres-item-icone violet">
-                        <i class="fa-solid fa-key"></i>
-                    </div>
-                    <div class="parametres-item-texte">
-                        <div class="titre">Changer le mot de passe</div>
-                        <div class="desc">Modifier ton mot de passe de connexion</div>
-                    </div>
+    <!-- COMPTE -->
+    <div class="parametres-section">
+        <div class="parametres-section-titre">Compte</div>
+        <div class="parametres-item" onclick="ouvrirChangerMotDePasse()">
+            <div class="parametres-item-gauche">
+                <div class="parametres-item-icone violet">
+                    <i class="fa-solid fa-key"></i>
                 </div>
-                <i class="fa-solid fa-chevron-right" style="color:#94a3b8;"></i>
+                <div class="parametres-item-texte">
+                    <div class="titre">Changer le mot de passe</div>
+                    <div class="desc">Modifier ton mot de passe de connexion</div>
+                </div>
             </div>
+            <i class="fa-solid fa-chevron-right" style="color:#94a3b8;"></i>
         </div>
+        <div class="parametres-item" onclick="ouvrirChangerEmail()">
+            <div class="parametres-item-gauche">
+                <div class="parametres-item-icone bleu">
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                <div class="parametres-item-texte">
+                    <div class="titre">Changer l'adresse email</div>
+                    <div class="desc">Modifier ton adresse email de connexion</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color:#94a3b8;"></i>
+        </div>
+    </div>
 
         <!-- CONFIDENTIALITÉ -->
         <div class="parametres-section">
@@ -300,6 +312,22 @@
                     <i class="fa-solid fa-check"></i> Sauvegarder
                 </button>
                 <button class="btn-edit-profil" style="flex:1" onclick="fermerModalMdp()">
+                    Annuler
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- MODAL CHANGER EMAIL -->
+    <div class="parametres-modal" id="modal-email">
+        <div class="parametres-modal-box">
+            <h3><i class="fa-solid fa-envelope" style="color:#3b82f6;"></i> Changer l'adresse email</h3>
+            <input type="email" id="email-nouveau" placeholder="Nouvelle adresse email">
+            <p id="email-message" style="display:none; font-size:0.85rem; margin-bottom:0.5rem;"></p>
+            <div class="parametres-modal-btns">
+                <button class="btn-primary" style="flex:1" onclick="changerEmail()">
+                    <i class="fa-solid fa-check"></i> Sauvegarder
+                </button>
+                <button class="btn-edit-profil" style="flex:1" onclick="fermerModalEmail()">
                     Annuler
                 </button>
             </div>

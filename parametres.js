@@ -221,3 +221,47 @@ async function supprimerCompte() {
 
 // ===== LANCER =====
 window.addEventListener('load', chargerParametres)
+
+// ===== CHANGER EMAIL =====
+function ouvrirChangerEmail() {
+    document.getElementById('modal-email').classList.add('ouvert')
+}
+
+function fermerModalEmail() {
+    document.getElementById('modal-email').classList.remove('ouvert')
+    document.getElementById('email-nouveau').value = ''
+    document.getElementById('email-message').style.display = 'none'
+}
+
+async function changerEmail() {
+    const nouvelEmail = document.getElementById('email-nouveau').value.trim()
+    const msg = document.getElementById('email-message')
+
+    if (!nouvelEmail || !nouvelEmail.includes('@')) {
+        msg.textContent = '❌ Entre une adresse email valide !'
+        msg.style.color = '#e24b4a'
+        msg.style.display = 'block'
+        return
+    }
+
+    const { error } = await supabaseClient.auth.updateUser({ email: nouvelEmail })
+
+    if (error) {
+        msg.textContent = '❌ Erreur : ' + error.message
+        msg.style.color = '#e24b4a'
+        msg.style.display = 'block'
+        return
+    }
+
+    // Mettre à jour aussi dans la table profils
+    await supabaseClient
+        .from('profils')
+        .update({ email: nouvelEmail })
+        .eq('user_id', utilisateurActuel.id)
+
+    msg.textContent = '✅ Un email de confirmation a été envoyé !'
+    msg.style.color = '#1D9E75'
+    msg.style.display = 'block'
+
+    setTimeout(() => fermerModalEmail(), 2000)
+}
