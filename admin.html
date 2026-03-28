@@ -204,6 +204,66 @@
             .admin-stats {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+/* ===== ADMIN RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .admin-container {
+        padding: 0 0.75rem;
+        margin: 1rem auto;
+    }
+
+    .admin-stats {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+    }
+
+    .admin-stat-card .stat-nombre {
+        font-size: 1.5rem;
+    }
+
+    .admin-onglets {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        gap: 0;
+    }
+
+    .admin-onglet {
+        white-space: nowrap;
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .admin-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .admin-table td {
+        font-size: 0.78rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .admin-table th {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .admin-btn {
+        font-size: 0.72rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    .admin-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .admin-titre {
+        font-size: 1.3rem;
+    }
+}
+
         }
     </style>
 </head>
