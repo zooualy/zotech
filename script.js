@@ -79,8 +79,10 @@ async function afficherArticles() {
             .order('created_at', { ascending: false })
             .limit(20)
 
-       const { data: sessionData } = await supabaseClient.auth.getSession()
+        const { data: sessionData } = await supabaseClient.auth.getSession()
         const utilisateurId = sessionData.session?.user?.id || null
+
+        const userIds = [...new Set((articlesSupabase || []).filter(a => a.user_id).map(a => a.user_id))]
         let profilsAuteurs = {}
 
         if (userIds.length > 0) {
@@ -101,16 +103,18 @@ async function afficherArticles() {
             date: new Date(a.created_at).toLocaleDateString('fr-FR'),
             created_at: a.created_at,
             featured: a.featured,
+            est_pub: a.est_pub,
             url_couverture: a.url_couverture,
             url_video: a.url_video,
             url_image: a.url_image,
             type_contenu: a.type_contenu,
+            user_id: a.user_id,
             username_auteur: a.username_auteur || profilsAuteurs[a.user_id]?.username || '',
             photo_auteur: profilsAuteurs[a.user_id]?.photo_profil || '',
             source: 'supabase'
         }))
 
-       // Récupérer les blocages
+        // Récupérer les blocages
         let idsBloques = []
         if (utilisateurId) {
             const { data: blocages } = await supabaseClient
@@ -141,33 +145,6 @@ async function afficherArticles() {
     } catch(e) {
         console.log('Erreur Supabase:', e)
     }
-}
-
-// ===== OUVRIR UN ARTICLE =====
-function ouvrirArticle(id, source) {
-    if (source === 'supabase') {
-        window.location.href = `article.html?id=${id}&src=supabase`
-    } else {
-        window.location.href = `article.html?id=${id}&src=local`
-    }
-}
-
-// ===== TRIER ARTICLES =====
-function trierArticles(tri) {
-    const latest = document.getElementById('latest-posts')
-    if (!latest || !window._autresArticles) return
-
-    let articlesTries = [...window._autresArticles]
-
-    if (tri === 'recent') {
-        articlesTries.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    } else if (tri === 'ancien') {
-        articlesTries.sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
-    } else if (tri === 'tag') {
-        articlesTries.sort((a, b) => (a.tag || '').localeCompare(b.tag || ''))
-    }
-
-    latest.innerHTML = articlesTries.map(creerCarte).join('')
 }
 
 // ===== PARTAGER ARTICLE =====
