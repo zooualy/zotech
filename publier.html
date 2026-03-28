@@ -234,9 +234,17 @@
             <p id="pub-message" style="display:none; margin: 1rem 0;"></p>
 
             <!-- BOUTON PUBLIER -->
+            <!-- OPTION PUBLICITÉ - ADMIN SEULEMENT -->
+            <div class="form-group" id="champ-pub" style="display:none;">
+                <label style="display:flex; align-items:center; gap:0.75rem; cursor:pointer;">
+                    <input type="checkbox" id="pub-est-pub" style="width:18px; height:18px; accent-color:#7c3aed;">
+                    <span>📢 Marquer comme <strong>Publicité</strong> — Ne s'affichera pas dans les profils</span>
+                </label>
+            </div>
             <button class="btn-primary btn-publier" onclick="publierContenu()">
                 🚀 Publier maintenant
             </button>
+
         </div>
     </div>
 

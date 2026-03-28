@@ -242,6 +242,19 @@ window.addEventListener('load', async () => {
     if (!data.session) {
         document.getElementById('form-publier').style.display = 'none'
         document.getElementById('non-connecte').style.display = 'block'
+        return
+    }
+
+    // Afficher option pub si admin
+    const { data: profil } = await supabaseClient
+        .from('profils')
+        .select('est_admin')
+        .eq('user_id', data.session.user.id)
+        .single()
+
+    if (profil?.est_admin) {
+        const champPub = document.getElementById('champ-pub')
+        if (champPub) champPub.style.display = 'block'
     }
 })
 

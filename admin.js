@@ -197,6 +197,9 @@ async function chargerPublications() {
        <a href="article.html?id=${a.id}&src=supabase" target="_blank" class="admin-btn admin-btn-success">
     <i class="fa-solid fa-eye"></i> Voir
 </a>
+<a href="publier.html?edit=${a.id}" target="_blank" class="admin-btn admin-btn-warning">
+    <i class="fa-solid fa-pen"></i> Modifier
+</a>
 <button class="admin-btn admin-btn-${a.featured ? 'warning' : 'success'}" onclick="toggleFeatured(${a.id}, ${a.featured})">
     <i class="fa-solid fa-star"></i> ${a.featured ? 'Retirer une' : 'À la une'}
 </button>

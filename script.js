@@ -1,91 +1,8 @@
-// ===== DONNÉES DES ARTICLES =====
-const articles = [
-    {
-        id: 1,
-        titre: "ChatGPT vs Claude : Lequel choisir en 2026 ?",
-        description: "On compare les deux IA les plus populaires pour t'aider à faire le bon choix.",
-        tag: "IA",
-        emoji: "🤖",
-        auteur: "Zo Oualy",
-        username_auteur: "zooualy",
-        date: "22 Mars 2026",
-        created_at: "2026-03-22T00:00:00Z",
-        featured: true,
-        source: "local"
-    },
-    {
-        id: 2,
-        titre: "5 extensions VS Code indispensables pour coder plus vite",
-        description: "Ces extensions vont changer ta façon de coder au quotidien.",
-        tag: "Tutoriel",
-        emoji: "⚡",
-        auteur: "Zo Oualy",
-        username_auteur: "zooualy",
-        date: "20 Mars 2026",
-        created_at: "2026-03-20T00:00:00Z",
-        featured: true,
-        source: "local"
-    },
-    {
-        id: 3,
-        titre: "Comment créer un site web gratuit en 2026",
-        description: "Guide complet pour lancer ton site sans dépenser un centime.",
-        tag: "Astuce",
-        emoji: "🌐",
-        auteur: "Zo Oualy",
-        username_auteur: "zooualy",
-        date: "18 Mars 2026",
-        created_at: "2026-03-18T00:00:00Z",
-        featured: true,
-        source: "local"
-    },
-    {
-        id: 4,
-        titre: "Les meilleures IA gratuites à utiliser maintenant",
-        description: "Une liste des outils IA gratuits les plus puissants du moment.",
-        tag: "IA",
-        emoji: "✨",
-        auteur: "Zo Oualy",
-        username_auteur: "zooualy",
-        date: "15 Mars 2026",
-        created_at: "2026-03-15T00:00:00Z",
-        featured: false,
-        source: "local"
-    },
-    {
-        id: 5,
-        titre: "Comment automatiser ses tâches avec l'IA",
-        description: "Gagne du temps en laissant l'IA faire le travail répétitif à ta place.",
-        tag: "Astuce",
-        emoji: "🔧",
-        auteur: "Zo Oualy",
-        username_auteur: "zooualy",
-        date: "12 Mars 2026",
-        created_at: "2026-03-12T00:00:00Z",
-        featured: false,
-        source: "local"
-    },
-    {
-        id: 6,
-        titre: "Créer une application mobile sans coder",
-        description: "Les meilleurs outils no-code pour lancer ton app rapidement.",
-        tag: "Tutoriel",
-        emoji: "📱",
-        auteur: "Zo Oualy",
-        username_auteur: "zooualy",
-        date: "10 Mars 2026",
-        created_at: "2026-03-10T00:00:00Z",
-        featured: false,
-        source: "local"
-    }
-]
-
 // ===== CRÉER UNE CARTE ARTICLE =====
 function creerCarte(article) {
-  let imageHtml = ''
+    let imageHtml = ''
     if (article.type_contenu === 'video' && article.url_video) {
-        // Miniature YouTube
-       let videoId = ''
+        let videoId = ''
         if (article.url_video.includes('embed/')) {
             videoId = article.url_video.split('embed/')[1].split('?')[0]
         } else if (article.url_video.includes('watch?v=')) {
@@ -93,21 +10,18 @@ function creerCarte(article) {
         } else if (article.url_video.includes('youtu.be/')) {
             videoId = article.url_video.split('youtu.be/')[1].split('?')[0]
         }
-        const thumbnail = videoId
-            ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-            : ''
+        const thumbnail = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : ''
         imageHtml = thumbnail
             ? `<div class="card-image" style="background-image:url(${thumbnail}); background-size:cover; background-position:center;"></div>`
             : `<div class="card-image">🎥</div>`
     } else if (article.type_contenu === 'photo' && article.url_image) {
-        // Première photo
         const premierePhoto = article.url_image.split(',')[0]
         imageHtml = `<div class="card-image" style="background-image:url(${premierePhoto}); background-size:cover; background-position:center;"></div>`
     } else if (article.url_couverture) {
         imageHtml = `<div class="card-image" style="background-image:url(${article.url_couverture}); background-size:cover; background-position:center;"></div>`
     } else {
         imageHtml = `<div class="card-image">${article.emoji || '📝'}</div>`
-    }  
+    }
 
     const photoAuteur = article.photo_auteur
         ? `<img src="${article.photo_auteur}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
@@ -115,7 +29,7 @@ function creerCarte(article) {
 
     const bgAuteur = article.photo_auteur ? 'background:none;' : ''
     const lienAuteur = article.username_auteur ? `profil.html?u=${article.username_auteur}` : '#'
-    const src = article.source || 'local'
+    const src = article.source || 'supabase'
 
     return `
         <div class="card" onclick="ouvrirArticle(${article.id}, '${src}')" style="cursor:pointer">
@@ -137,28 +51,18 @@ function creerCarte(article) {
                     <span style="font-size:0.8rem;">📅 ${article.date || new Date(article.created_at).toLocaleDateString('fr-FR')}</span>
                 </div>
                 <div class="card-actions">
-                  
-                 <button class="card-action-btn" onclick="event.stopPropagation(); partagerArticle(${article.id}, '${article.titre.replace(/'/g, "\\'")}')">
-    <i class="fa-solid fa-link"></i>
-</button>
-<button class="card-action-btn" onclick="event.stopPropagation(); ouvrirArticle(${article.id}, '${src}')">
-    <i class="fa-solid fa-eye"></i>
-</button>  
-<div class="card-actions">
-                        <button class="card-action-btn" onclick="event.stopPropagation(); partagerArticle(${article.id}, '${article.titre.replace(/'/g, "\\'")}')">
-                            <i class="fa-solid fa-link"></i>
-                        </button>
-                        <button class="card-action-btn" onclick="event.stopPropagation(); ouvrirArticle(${article.id}, '${src}')">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                        <button class="card-action-btn" onclick="event.stopPropagation(); signalerContenu('article', ${article.id})" style="color:#e24b4a;">
-                            <i class="fa-solid fa-flag"></i>
-                        </button>
-                    </div>
+                    <button class="card-action-btn" onclick="event.stopPropagation(); partagerArticle(${article.id}, '${article.titre.replace(/'/g, "\\'")}')">
+                        <i class="fa-solid fa-link"></i>
+                    </button>
+                    <button class="card-action-btn" onclick="event.stopPropagation(); ouvrirArticle(${article.id}, '${src}')">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <button class="card-action-btn" onclick="event.stopPropagation(); signalerContenu('article', ${article.id})" style="color:#e24b4a;">
+                        <i class="fa-solid fa-flag"></i>
+                    </button>
                 </div>
             </div>
         </div>
-        
     `
 }
 
@@ -186,7 +90,7 @@ async function afficherArticles() {
             if (profils) profils.forEach(p => profilsAuteurs[p.user_id] = p)
         }
 
-       const articlesFormates = (articlesSupabase || []).map(a => ({
+        const articlesFormates = (articlesSupabase || []).map(a => ({
             id: a.id,
             titre: a.titre,
             description: a.description,
@@ -205,22 +109,22 @@ async function afficherArticles() {
             source: 'supabase'
         }))
 
-        // Combiner et trier par date
-        const tousLesArticles = [...articlesFormates, ...articles]
-            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        const articlesUne = articlesFormates.filter(a => a.featured)
+        const autresArticles = articlesFormates.filter(a => !a.est_pub)
 
-        const articlesUne = tousLesArticles.filter(a => a.featured)
-        const autresArticles = tousLesArticles.filter(a => !a.featured)
-
-        // Sauvegarder pour le tri
         window._autresArticles = autresArticles
 
-      if (articlesUne.length > 0) {
+        if (articlesUne.length > 0) {
             featured.innerHTML = articlesUne.map(creerCarte).join('')
             initialiserCarousel()
+        } else {
+            featured.innerHTML = '<div style="text-align:center; padding:2rem; color:#94a3b8;">Aucun article à la une pour le moment</div>'
         }
+
         if (autresArticles.length > 0) {
             latest.innerHTML = autresArticles.map(creerCarte).join('')
+        } else {
+            latest.innerHTML = '<div style="text-align:center; padding:2rem; color:#94a3b8;">Aucun article pour le moment</div>'
         }
 
     } catch(e) {
@@ -293,20 +197,7 @@ window.addEventListener('load', () => {
 
 // ===== LANCER =====
 document.addEventListener('DOMContentLoaded', async function() {
-    const featured = document.getElementById('featured-posts')
-    const latest = document.getElementById('latest-posts')
-
-    if (featured && latest) {
-        // Afficher locaux immédiatement
-        window._autresArticles = articles.filter(a => !a.featured)
-      featured.innerHTML = articles.filter(a => a.featured).map(creerCarte).join('')
-initialiserCarousel()
-    }
-
-    // Charger Supabase après
-    setTimeout(async () => {
-        await afficherArticles()
-    }, 800)
+    await afficherArticles()
 
     // Newsletter
     const btnNewsletter = document.querySelector('.newsletter-form .btn-primary')
@@ -315,10 +206,10 @@ initialiserCarousel()
         btnNewsletter.addEventListener('click', function() {
             const email = emailInput.value
             if (email && email.includes('@')) {
-                alert(`✅ Merci ! Tu es abonné avec : ${email}`)
+                afficherToast('Merci ! Tu es abonné avec : ' + email, 'succes')
                 emailInput.value = ''
             } else {
-                alert('❌ Entre une adresse email valide !')
+                afficherToast('Entre une adresse email valide !', 'erreur')
             }
         })
     }
@@ -339,23 +230,19 @@ function initialiserCarousel() {
 
     carouselIndex = 0
 
-    // Créer les dots
     dots.innerHTML = Array.from({ length: carouselTotal }, (_, i) => `
         <button class="carousel-dot ${i === 0 ? 'active' : ''}" onclick="allerCarousel(${i})"></button>
     `).join('')
 
-    // Arrêter l'ancien interval s'il existe
     if (carouselInterval) {
         clearInterval(carouselInterval)
         carouselInterval = null
     }
 
-    // Démarrer auto-play — 6 secondes
     carouselInterval = setInterval(() => {
         carouselNext()
     }, 6000)
 
-    // Pause au survol
     const wrapper = track.parentElement
     wrapper.addEventListener('mouseenter', () => {
         clearInterval(carouselInterval)
@@ -367,6 +254,7 @@ function initialiserCarousel() {
         }
     })
 }
+
 function allerCarousel(index) {
     const track = document.getElementById('featured-posts')
     const dots = document.getElementById('carousel-dots')
@@ -375,7 +263,6 @@ function allerCarousel(index) {
     carouselIndex = index
     track.style.transform = `translateX(-${carouselIndex * 100}%)`
 
-    // Mettre à jour dots
     if (dots) {
         dots.querySelectorAll('.carousel-dot').forEach((d, i) => {
             d.classList.toggle('active', i === carouselIndex)
