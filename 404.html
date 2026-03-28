@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZoTech — Page introuvable</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .page-404 {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .page-404-content {
+            max-width: 500px;
+        }
+
+        .page-404-numero {
+            font-size: 8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #7c3aed, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .page-404-titre {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.75rem;
+        }
+
+        .page-404-desc {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .page-404-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <img src="Logo site choix.png" style="height:38px; width:auto; object-fit:contain;">
+            <span class="logo-texte">ZoTech</span>
+        </a>
+    </nav>
+
+    <div class="page-404">
+        <div class="page-404-content">
+            <div class="page-404-numero">404</div>
+            <h1 class="page-404-titre">Page introuvable</h1>
+            <p class="page-404-desc">
+                Oups ! La page que tu cherches n'existe pas ou a été déplacée.
+                Vérifie l'URL ou retourne à l'accueil.
+            </p>
+            <div class="page-404-btns">
+                <a href="index.html" class="btn-primary" style="text-decoration:none;">
+                    <i class="fa-solid fa-house"></i> Retour à l'accueil
+                </a>
+                <button onclick="history.back()" class="btn-edit-profil">
+                    <i class="fa-solid fa-arrow-left"></i> Page précédente
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

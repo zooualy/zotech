@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catégorie - ZoTech</title>
+    <link rel="icon" type="" href="/media/logo site choix .jpeg">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+<a href="index.html" class="nav-logo">
+    <img src="/media/logo site choix .jpeg" style="height:38px; width:auto; object-fit:contain;">
+    <span class="logo-texte">ZoTech</span>
+</a>
+<button class="hamburger-btn" onclick="toggleMobileMenu()">
+    <i class="fa-solid fa-bars"></i>
+</button>
+        <div class="nav-links">
+            <a href="index.html">Accueil</a>
+            <a href="categorie.html?cat=TutorielAstuce">Tutoriels & Astuces</a>
+            <a href="categorie.html?cat=IA">IA & Tech</a>
+            <a href="categorie.html?cat=News">News</a>
+        </div>
+
+<button class="nav-search-btn" onclick="ouvrirRecherche()">
+    <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+    
+<div class="nav-notif-wrapper" id="nav-notif-wrapper" style="display:none;">
+    <button class="notif-btn" onclick="toggleNotifications()">
+        <i class="fa-solid fa-bell"></i>
+        <span class="notif-badge" id="notif-badge"></span>
+    </button>
+    </button>
+    <div class="notif-dropdown" id="notif-dropdown">
+        <div class="notif-header">
+            <h3>🔔 Notifications</h3>
+            <button class="notif-tout-lire" onclick="marquerToutLu()">Tout lu</button>
+        </div>
+        <!-- ONGLETS -->
+        <div class="notif-onglets">
+            <button class="notif-onglet active" id="notif-onglet-tous" onclick="changerOngletNotif('tous')">Tous</button>
+            <button class="notif-onglet" id="notif-onglet-likes" onclick="changerOngletNotif('likes')">
+                <i class="fa-solid fa-heart"></i>
+            </button>
+            <button class="notif-onglet" id="notif-onglet-commentaires" onclick="changerOngletNotif('commentaires')">
+                <i class="fa-solid fa-comment"></i>
+            </button>
+            <button class="notif-onglet" id="notif-onglet-favoris" onclick="changerOngletNotif('favoris')">
+                <i class="fa-solid fa-bookmark"></i>
+            </button>
+            <button class="notif-onglet" id="notif-onglet-abonnements" onclick="changerOngletNotif('abonnements')">
+                <i class="fa-solid fa-user"></i>
+            </button>
+            <button class="notif-onglet" id="notif-onglet-tags" onclick="changerOngletNotif('tags')">
+                <i class="fa-solid fa-tag"></i>
+            </button>
+        </div>
+        <div class="notif-liste" id="notif-liste"></div>
+    </div>
+</div>
+        </div>
+    </div>
+
+        <div class="nav-auth" id="nav-auth">
+            <button class="btn-login" onclick="ouvrirModal('connexion')">Connexion</button>
+            <button class="btn-signup" onclick="ouvrirModal('inscription')">S'inscrire</button>
+        </div>
+    </nav>
+
+    <!-- HERO CATÉGORIE -->
+    <div class="categorie-hero" id="categorie-hero">
+        <div class="categorie-emoji" id="categorie-emoji">📚</div>
+        <h1 id="categorie-titre">Catégorie</h1>
+        <p id="categorie-desc">Tous les contenus de cette catégorie</p>
+    </div>
+
+    <!-- FILTRES -->
+<div class="categorie-filtres">
+    <button class="filtre-btn active" onclick="filtrer('tous')">
+        <i class="fa-solid fa-border-all"></i> Tous
+    </button>
+    <button class="filtre-btn" onclick="filtrer('article')">
+        <i class="fa-solid fa-file-lines"></i> Articles
+    </button>
+    <button class="filtre-btn" onclick="filtrer('video')">
+        <i class="fa-solid fa-video"></i> Vidéos
+    </button>
+    <button class="filtre-btn" onclick="filtrer('photo')">
+        <i class="fa-solid fa-image"></i> Photos
+    </button>
+        <select onchange="trierCategorie(this.value)"
+            style="background:#12121e; border:1px solid #1e1e2e; color:#a0a0b0; padding:0.4rem 0.75rem; border-radius:8px; font-size:0.85rem; cursor:pointer; margin-left:auto;">
+            <option value="recent">🕐 Plus récents</option>
+            <option value="ancien">📅 Plus anciens</option>
+            <option value="tag">🏷️ Par catégorie</option>
+        </select>
+    </div>
+
+    <!-- RÉSULTATS -->
+    <div class="categorie-container">
+        <p id="nombre-resultats" style="color: #a0a0b0; font-size: 0.9rem; margin-bottom: 1.5rem;"></p>
+        <div class="cards-grid" id="categorie-grid">
+            <div style="grid-column:1/-1; text-align:center; padding:3rem; color:#a0a0b0;">
+                <div style="font-size:3rem;">⏳</div>
+                <p>Chargement...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONNEXION / INSCRIPTION -->
+    <div class="modal-overlay" id="auth-modal" onclick="fermerModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="fermerModal()">✕</button>
+            <h2 id="modal-titre">🔐 Connexion</h2>
+            <p id="auth-message" style="display:none"></p>
+            <div id="form-connexion">
+                <input type="email" placeholder="Ton email" id="login-email">
+                <input type="password" placeholder="Ton mot de passe" id="login-password">
+                <button class="btn-primary" onclick="connecter(
+                    document.getElementById('login-email').value,
+                    document.getElementById('login-password').value
+                )">Se connecter</button>
+                <p class="modal-switch">Pas encore de compte ?
+                    <span onclick="ouvrirModal('inscription')">S'inscrire</span>
+                </p>
+            </div>
+            <div id="form-inscription" style="display:none">
+                <input type="text" placeholder="Ton pseudo (ex: Zo Oualy)" id="register-pseudo">
+                <input type="text" placeholder="Nom d'utilisateur (ex: zooualy)" id="register-username"
+                    oninput="verifierUsername(this.value.toLowerCase())" autocomplete="off">
+                <small id="username-indicator" style="display:block; margin-top: 4px; font-size: 0.8rem;"></small>
+                <input type="email" placeholder="Ton email" id="register-email">
+                <input type="password" placeholder="Ton mot de passe" id="register-password">
+                <button class="btn-primary" onclick="inscrire(
+                    document.getElementById('register-email').value,
+                    document.getElementById('register-password').value,
+                    document.getElementById('register-pseudo').value,
+                    document.getElementById('register-username').value
+                )">Créer mon compte</button>
+                <p class="modal-switch">Déjà un compte ?
+                    <span onclick="ouvrirModal('connexion')">Se connecter</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOUTON FLOTTANT -->
+    <a href="publier.html" class="btn-flottant">+</a>
+
+    <!-- RECHERCHE PLEIN ÉCRAN -->
+    <div class="recherche-overlay" id="recherche-overlay">
+        <div class="recherche-header">
+            <input type="text" id="search-input" placeholder="Rechercher des profils ou contenus..."
+                oninput="rechercherEnTempsReel(this.value)" autofocus>
+            <button onclick="fermerRecherche()">✕</button>
+        </div>
+        <div class="recherche-resultats" id="search-resultats">
+            <div class="search-vide">
+                <div style="font-size: 3rem;">🔍</div>
+                <p>Tape quelque chose pour rechercher</p>
+            </div>
+        </div>
+    </div>
+
+<!-- MODAL CONFIRMATION -->
+<div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-box">
+        <div class="confirm-icone" id="confirm-icone">⚠️</div>
+        <div class="confirm-titre" id="confirm-titre">Confirmation</div>
+        <div class="confirm-message" id="confirm-message">Es-tu sûr ?</div>
+        <div class="confirm-boutons">
+            <button class="confirm-btn-annuler" onclick="fermerConfirm()">Annuler</button>
+            <button class="confirm-btn-confirmer" id="confirm-btn-ok">Confirmer</button>
+        </div>
+    </div>
+</div>
+<!-- MENU MOBILE -->
+
+<div class="mobile-menu" id="mobile-menu" onclick="fermerMobileMenu()">
+    <div class="mobile-menu-content" onclick="event.stopPropagation()">
+        <div class="mobile-menu-header">
+            <span class="logo-texte">ZoTech</span>
+            <button onclick="fermerMobileMenu()"
+                style="background:transparent; border:none; color:#ffffff; font-size:1.2rem; cursor:pointer;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <a href="index.html" onclick="fermerMobileMenu()">
+            <i class="fa-solid fa-house"></i> Accueil
+        </a>
+        <a href="categorie.html?cat=TutorielAstuce" onclick="fermerMobileMenu()">
+            <i class="fa-solid fa-book"></i> Tutoriels & Astuces
+        </a>
+        <a href="categorie.html?cat=IA" onclick="fermerMobileMenu()">
+            <i class="fa-solid fa-robot"></i> IA & Tech
+        </a>
+        <a href="categorie.html?cat=News" onclick="fermerMobileMenu()">
+            <i class="fa-solid fa-newspaper"></i> News
+        </a>
+        <a href="publier.html" onclick="fermerMobileMenu()">
+            <i class="fa-solid fa-pen-to-square"></i> Publier
+        </a>
+        <div style="margin-top:auto; padding-top:1rem; border-top:1px solid #252840;">
+            <button id="menu-mobile-deconnexion"
+                style="width:100%; background:transparent; border:none; color:#e24b4a; padding:0.85rem 1rem; border-radius:10px; cursor:pointer; font-size:0.9rem; display:flex; align-items:center; gap:0.75rem;"
+                onclick="deconnecter(); fermerMobileMenu()">
+                <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+            </button>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<script src="mobile.js"></script>
+<script src="confirm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script src="categorie.js"></script>
+<script src="recherche.js"></script>
+<script src="notifications.js"></script>
+<script src="toast.js"></script>
+<script src="filtrage.js"></script>
+</body>
+
+</html>

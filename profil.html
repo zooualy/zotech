@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZoTech - IA & Technologie</title>
+    <link rel="icon" type="image/png" href="/media/logo site choix .jpeg">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <img src="/media/logo site choix .jpeg" style="height:38px; width:auto; object-fit:contain;">
+            <span class="logo-texte">ZoTech</span>
+        </a>
+        <button class="hamburger-btn" onclick="toggleMobileMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="nav-links">
+            <a href="index.html">Accueil</a>
+            <a href="categorie.html?cat=TutorielAstuce">Tutoriels & Astuces</a>
+            <a href="categorie.html?cat=IA">IA & Tech</a>
+            <a href="categorie.html?cat=News">News</a>
+        </div>
+        <button class="nav-search-btn" onclick="ouvrirRecherche()">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <div class="nav-notif-wrapper" id="nav-notif-wrapper" style="display:none;">
+            <button class="notif-btn" onclick="toggleNotifications()">
+                <i class="fa-solid fa-bell"></i>
+                <span class="notif-badge" id="notif-badge"></span>
+            </button>
+            <div class="notif-dropdown" id="notif-dropdown">
+                <div class="notif-header">
+                    <h3>🔔 Notifications</h3>
+                    <button class="notif-tout-lire" onclick="marquerToutLu()">Tout lu</button>
+                </div>
+                <div class="notif-onglets">
+                    <button class="notif-onglet active" id="notif-onglet-tous"
+                        onclick="changerOngletNotif('tous')">Tous</button>
+                    <button class="notif-onglet" id="notif-onglet-likes" onclick="changerOngletNotif('likes')"><i
+                            class="fa-solid fa-heart"></i></button>
+                    <button class="notif-onglet" id="notif-onglet-commentaires"
+                        onclick="changerOngletNotif('commentaires')"><i class="fa-solid fa-comment"></i></button>
+                    <button class="notif-onglet" id="notif-onglet-favoris" onclick="changerOngletNotif('favoris')"><i
+                            class="fa-solid fa-bookmark"></i></button>
+                    <button class="notif-onglet" id="notif-onglet-abonnements"
+                        onclick="changerOngletNotif('abonnements')"><i class="fa-solid fa-user"></i></button>
+                    <button class="notif-onglet" id="notif-onglet-tags" onclick="changerOngletNotif('tags')"><i
+                            class="fa-solid fa-tag"></i></button>
+                </div>
+                <div class="notif-liste" id="notif-liste"></div>
+            </div>
+        </div>
+        <div class="nav-auth" id="nav-auth">
+            <button class="btn-login" onclick="ouvrirModal('connexion')">Connexion</button>
+            <button class="btn-signup" onclick="ouvrirModal('inscription')">S'inscrire</button>
+        </div>
+    </nav>
+
+    <!-- PROFIL -->
+    <div class="profil-page">
+
+        <!-- MENU HAMBURGER PROFIL -->
+        <button class="profil-hamburger" id="profil-hamburger" onclick="toggleMenuProfil()">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+        <div class="profil-menu-dropdown" id="profil-menu-dropdown">
+            <div id="profil-menu-contenu"></div>
+        </div>
+
+        <!-- COUVERTURE -->
+        <div class="profil-couverture" id="profil-couverture">
+            <div class="couverture-overlay" id="couverture-overlay" style="display:none;">
+                <label for="input-couverture"
+                    style="cursor:pointer; background:rgba(0,0,0,0.5); color:white; padding:0.5rem 1rem; border-radius:8px;">
+                    <i class="fa-solid fa-camera"></i> Changer la couverture
+                </label>
+            </div>
+            <input type="file" id="input-couverture" accept="image/*" style="display:none;">
+        </div>
+
+        <!-- INFO PROFIL -->
+        <div class="profil-info-container">
+            <div class="profil-gauche">
+                <div class="profil-avatar-wrapper">
+                    <div class="profil-avatar" id="profil-avatar">
+                        <span id="profil-initiale">?</span>
+                    </div>
+                    <div class="avatar-overlay" id="avatar-overlay" style="display:none;">
+                        <label for="input-avatar" style="cursor:pointer;">
+                            <i class="fa-solid fa-camera"></i>
+                        </label>
+                    </div>
+                    <input type="file" id="input-avatar" accept="image/*" style="display:none;">
+                </div>
+                <h1 id="profil-pseudo" class="profil-pseudo-nom">Chargement...</h1>
+                <p id="profil-username" class="profil-username">@username</p>
+            </div>
+
+            <div class="profil-infos">
+                <div class="profil-stats">
+                    <div class="stat">
+                        <span class="stat-nombre" id="stat-publications">0</span>
+                        <span class="stat-label">Publications</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-nombre" id="stat-abonnes">0</span>
+                        <span class="stat-label">Abonnés</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-nombre" id="stat-abonnements">0</span>
+                        <span class="stat-label">Abonnements</span>
+                    </div>
+                </div>
+                <p id="profil-bio" class="profil-bio">Aucune bio pour le moment</p>
+                <div style="display:flex; flex-direction:column; gap:0.75rem; margin-top:1rem;">
+                    <div id="profil-boutons"></div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- ONGLETS -->
+        <div class="profil-onglets">
+            <button class="onglet active" onclick="changerOnglet('publications')">
+                <i class="fa-solid fa-file-lines"></i> Publications
+            </button>
+            <button class="onglet" onclick="changerOnglet('photos')">
+                <i class="fa-solid fa-image"></i> Photos
+            </button>
+            <button class="onglet" onclick="changerOnglet('videos')">
+                <i class="fa-solid fa-video"></i> Vidéos
+            </button>
+            <button class="onglet" onclick="changerOnglet('favoris')">
+                <i class="fa-solid fa-bookmark"></i> Favoris
+            </button>
+            <button class="onglet" onclick="changerOnglet('aimes')">
+                <i class="fa-solid fa-heart"></i> Aimés
+            </button>
+        </div>
+
+        <!-- CONTENU ONGLETS -->
+        <div class="profil-contenu">
+            <div id="tab-publications" class="tab-content">
+                <div class="cards-grid" id="grid-publications"></div>
+            </div>
+            <div id="tab-photos" class="tab-content" style="display:none">
+                <div class="photos-profil-grid" id="grid-photos"></div>
+            </div>
+            <div id="tab-videos" class="tab-content" style="display:none">
+                <div class="cards-grid" id="grid-videos"></div>
+            </div>
+            <div id="tab-favoris" class="tab-content" style="display:none">
+                <div class="cards-grid" id="grid-favoris"></div>
+            </div>
+            <div id="tab-aimes" class="tab-content" style="display:none">
+                <div class="cards-grid" id="grid-aimes"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL ÉDITEUR PHOTO -->
+    <div class="modal-overlay" id="editeur-photo-modal" style="display:none;">
+        <div class="modal" style="max-width:500px;" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="fermerEditeurPhoto()">✕</button>
+            <h2 id="editeur-photo-titre">✂️ Ajuster la photo</h2>
+            <div id="editeur-photo-wrapper"
+                style="width:100%; height:300px; overflow:hidden; background:#0f1117; position:relative; display:flex; align-items:center; justify-content:center; border-radius:12px;">
+                <img id="editeur-photo-img" src="" alt="photo"
+                    style="max-width:100%; max-height:100%; cursor:grab; user-select:none; position:relative;">
+            </div>
+            <div style="display:flex; align-items:center; gap:1rem; margin-top:1rem;">
+                <label style="font-size:0.8rem; color:#a0a0b0;"><i class="fa-solid fa-magnifying-glass"></i></label>
+                <input type="range" id="editeur-zoom" min="50" max="300" value="100"
+                    oninput="appliquerZoomPhoto(this.value)" style="flex:1;">
+                <span id="editeur-zoom-value" style="font-size:0.8rem; color:#a0a0b0; min-width:40px;">100%</span>
+                <button class="btn-reset-image" onclick="resetPhoto()">↺</button>
+            </div>
+            <div style="display:flex; gap:0.75rem; margin-top:1rem;">
+                <button class="btn-primary" style="flex:1" onclick="sauvegarderPhoto()">✅ Appliquer</button>
+                <button class="btn-edit-profil" style="flex:1" onclick="fermerEditeurPhoto()">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ÉDITION PROFIL -->
+    <div class="modal-overlay" id="edit-modal" onclick="fermerEditModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="fermerEditModal()">✕</button>
+            <h2>✏️ Modifier le profil</h2>
+            <div class="form-group">
+                <label>Pseudo</label>
+                <input type="text" id="edit-pseudo" placeholder="Ton pseudo">
+            </div>
+            <div class="form-group">
+                <label>Nom d'utilisateur</label>
+                <input type="text" id="edit-username" placeholder="ton_username" oninput="verifierUsername(this.value)">
+                <small id="username-indicator"></small>
+            </div>
+            <div class="form-group">
+                <label>Bio</label>
+                <textarea id="edit-bio" placeholder="Parle de toi... (max 150 caractères)" maxlength="150"
+                    style="min-height: 100px;"
+                    oninput="document.getElementById('bio-count').textContent = this.value.length"></textarea>
+                <small id="bio-count" style="color:#a0a0b0; float:right;">0</small>/150
+            </div>
+            <p id="edit-message" style="display:none; margin-bottom: 1rem;"></p>
+            <button class="btn-primary" style="width:100%" onclick="sauvegarderProfil()">💾 Sauvegarder</button>
+        </div>
+    </div>
+
+    <!-- MODAL CONNEXION / INSCRIPTION -->
+    <div class="modal-overlay" id="auth-modal" onclick="fermerModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="fermerModal()">✕</button>
+            <h2 id="modal-titre">🔐 Connexion</h2>
+            <p id="auth-message" style="display:none"></p>
+            <div id="form-connexion">
+                <input type="email" placeholder="Ton email" id="login-email" autocomplete="off">
+                <input type="password" placeholder="Ton mot de passe" id="login-password">
+                <button class="btn-primary"
+                    onclick="connecter(document.getElementById('login-email').value, document.getElementById('login-password').value)">Se
+                    connecter</button>
+                <p class="modal-switch">Pas encore de compte ? <span
+                        onclick="ouvrirModal('inscription')">S'inscrire</span></p>
+            </div>
+            <div id="form-inscription" style="display:none">
+                <input type="text" placeholder="Ton pseudo (ex: Zo Oualy)" id="register-pseudo" autocomplete="off">
+                <input type="text" placeholder="Nom d'utilisateur (ex: zooualy)" id="register-username"
+                    oninput="verifierUsername(this.value.toLowerCase())" autocomplete="off">
+                <small id="username-indicator" style="display:block; margin-top: 4px; font-size: 0.8rem;"></small>
+                <input type="email" placeholder="Ton email" id="register-email" autocomplete="off">
+                <input type="password" placeholder="Ton mot de passe" id="register-password">
+                <button class="btn-primary"
+                    onclick="inscrire(document.getElementById('register-email').value, document.getElementById('register-password').value, document.getElementById('register-pseudo').value, document.getElementById('register-username').value)">Créer
+                    mon compte</button>
+                <p class="modal-switch">Déjà un compte ? <span onclick="ouvrirModal('connexion')">Se connecter</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- RECHERCHE -->
+    <div class="recherche-overlay" id="recherche-overlay">
+        <div class="recherche-header">
+            <input type="text" id="search-input" placeholder="Rechercher des profils ou contenus..."
+                oninput="rechercherEnTempsReel(this.value)" autofocus>
+            <button onclick="fermerRecherche()">✕</button>
+        </div>
+        <div class="recherche-resultats" id="search-resultats">
+            <div class="search-vide">
+                <div style="font-size: 3rem;">🔍</div>
+                <p>Tape quelque chose pour rechercher</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOUTON FLOTTANT -->
+    <a href="publier.html" class="btn-flottant">+</a>
+
+    <!-- MODAL CONFIRMATION -->
+    <div class="confirm-overlay" id="confirm-overlay">
+        <div class="confirm-box">
+            <div class="confirm-icone" id="confirm-icone">⚠️</div>
+            <div class="confirm-titre" id="confirm-titre">Confirmation</div>
+            <div class="confirm-message" id="confirm-message">Es-tu sûr ?</div>
+            <div class="confirm-boutons">
+                <button class="confirm-btn-annuler" onclick="fermerConfirm()">Annuler</button>
+                <button class="confirm-btn-confirmer" id="confirm-btn-ok">Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MENU MOBILE -->
+    <div class="mobile-menu" id="mobile-menu" onclick="fermerMobileMenu()">
+        <div class="mobile-menu-content" onclick="event.stopPropagation()">
+            <div class="mobile-menu-header">
+                <span class="logo-texte">ZoTech</span>
+                <button onclick="fermerMobileMenu()"
+                    style="background:transparent; border:none; color:#ffffff; font-size:1.2rem; cursor:pointer;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <a href="index.html" onclick="fermerMobileMenu()"><i class="fa-solid fa-house"></i> Accueil</a>
+            <a href="categorie.html?cat=TutorielAstuce" onclick="fermerMobileMenu()"><i class="fa-solid fa-book"></i>
+                Tutoriels & Astuces</a>
+            <a href="categorie.html?cat=IA" onclick="fermerMobileMenu()"><i class="fa-solid fa-robot"></i> IA & Tech</a>
+            <a href="categorie.html?cat=News" onclick="fermerMobileMenu()"><i class="fa-solid fa-newspaper"></i>
+                News</a>
+            <a href="publier.html" onclick="fermerMobileMenu()"><i class="fa-solid fa-pen-to-square"></i> Publier</a>
+            <div style="margin-top:auto; padding-top:1rem; border-top:1px solid #252840;">
+                <button id="menu-mobile-deconnexion"
+                    style="width:100%; background:transparent; border:none; color:#e24b4a; padding:0.85rem 1rem; border-radius:10px; cursor:pointer; font-size:0.9rem; display:flex; align-items:center; gap:0.75rem;"
+                    onclick="deconnecter(); fermerMobileMenu()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script src="profil.js"></script>
+    <script src="recherche.js"></script>
+    <script src="notifications.js"></script>
+    <script src="confirm.js"></script>
+    <script src="toast.js"></script>
+    <script src="filtrage.js"></script>
+    <script src="mobile.js"></script>
+
+    <script>
+        // Attacher les events des inputs photo au chargement
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputAvatar = document.getElementById('input-avatar')
+            const inputCouverture = document.getElementById('input-couverture')
+
+            if (inputAvatar) {
+                inputAvatar.addEventListener('change', function () {
+                    if (this.files[0]) ouvrirEditeurPhoto(this.files[0], 'avatar')
+                })
+            }
+
+            if (inputCouverture) {
+                inputCouverture.addEventListener('change', function () {
+                    if (this.files[0]) ouvrirEditeurPhoto(this.files[0], 'couverture')
+                })
+            }
+        })
+    </script>
+
+</body>
+
+</html>

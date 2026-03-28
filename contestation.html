@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZoTech — Contester un bannissement</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/media/logo site choix .jpeg">
+    <style>
+        .contestation-container {
+            max-width: 600px;
+            margin: 4rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .contestation-card {
+            background: #1a1d2e;
+            border: 1px solid #252840;
+            border-radius: 20px;
+            padding: 2.5rem;
+        }
+
+        .contestation-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .contestation-header .icone {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .contestation-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .contestation-header p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            background: #0f1117;
+            border: 1px solid #252840;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .contestation-info {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            color: #a78bfa;
+        }
+
+        .btn-envoyer {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #7c3aed, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-envoyer:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+        }
+
+        .message-succes {
+            text-align: center;
+            padding: 2rem;
+            display: none;
+        }
+
+        .message-succes .icone {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <img src="/media/logo site choix .jpeg" style="height:38px; width:auto; object-fit:contain;">
+            <span class="logo-texte">ZoTech</span>
+        </a>
+    </nav>
+
+    <div class="contestation-container">
+        <div class="contestation-card">
+
+            <!-- FORMULAIRE -->
+            <div id="form-contestation">
+                <div class="contestation-header">
+                    <div class="icone">🚫</div>
+                    <h1>Contester un bannissement</h1>
+                    <p>Explique pourquoi tu penses que ton bannissement est injustifié. Notre équipe examinera ta demande.</p>
+                </div>
+
+                <div class="contestation-info">
+                    <i class="fa-solid fa-circle-info"></i> Ta contestation sera examinée dans un délai de 48h. Sois précis et honnête dans ton message.
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-user"></i> Nom d'utilisateur</label>
+                    <input type="text" id="contestation-username" placeholder="@ton_username" readonly style="opacity:0.7;">
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-envelope"></i> Email</label>
+                    <input type="email" id="contestation-email" placeholder="ton@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-message"></i> Ton message *</label>
+                    <textarea id="contestation-message" placeholder="Explique pourquoi tu contestes ce bannissement. Sois précis et donne le maximum de détails..."></textarea>
+                </div>
+
+                <p id="contestation-erreur" style="color:#e24b4a; font-size:0.85rem; display:none; margin-bottom:1rem;"></p>
+
+                <button class="btn-envoyer" onclick="envoyerContestation()">
+                    <i class="fa-solid fa-paper-plane"></i> Envoyer ma contestation
+                </button>
+            </div>
+
+            <!-- MESSAGE SUCCÈS -->
+        <div class="message-succes" id="message-succes">
+            <div class="icone">✅</div>
+            <h2 style="color:#1D9E75; margin-bottom:0.5rem;">Contestation envoyée !</h2>
+            <p style="color:#94a3b8; margin-bottom:1.5rem;">Notre équipe examinera ta demande dans les 48h. Tu recevras une
+                réponse par email.</p>
+            <a href="index.html"
+                style="display:inline-block; background:linear-gradient(135deg, #7c3aed, #3b82f6); color:white; padding:0.75rem 1.5rem; border-radius:12px; text-decoration:none; font-weight:600;">
+                <i class="fa-solid fa-house"></i> Retour à l'accueil
+            </a>
+        </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
+    <script src="toast.js"></script>
+    <script>
+        // Pré-remplir le username
+        window.addEventListener('load', async () => {
+            const params = new URLSearchParams(window.location.search)
+            const username = params.get('u')
+            if (username) {
+                document.getElementById('contestation-username').value = '@' + username
+            }
+        })
+
+        async function envoyerContestation() {
+            const username = document.getElementById('contestation-username').value.replace('@', '')
+            const email = document.getElementById('contestation-email').value.trim()
+            const message = document.getElementById('contestation-message').value.trim()
+            const erreur = document.getElementById('contestation-erreur')
+
+            if (!email || !message) {
+                erreur.textContent = '❌ Email et message obligatoires !'
+                erreur.style.display = 'block'
+                return
+            }
+
+            if (message.length < 20) {
+                erreur.textContent = '❌ Ton message doit contenir au moins 20 caractères !'
+                erreur.style.display = 'block'
+                return
+            }
+
+            const btn = document.querySelector('.btn-envoyer')
+            btn.textContent = '⏳ Envoi en cours...'
+            btn.disabled = true
+
+            const { error } = await supabaseClient
+                .from('contestations')
+                .insert([{
+                    username: username,
+                    message: message,
+                    statut: 'en_attente'
+                }])
+
+            if (error) {
+                erreur.textContent = '❌ Erreur : ' + error.message
+                erreur.style.display = 'block'
+                btn.textContent = 'Envoyer ma contestation'
+                btn.disabled = false
+                return
+            }
+
+            document.getElementById('form-contestation').style.display = 'none'
+            document.getElementById('message-succes').style.display = 'block'
+        }
+    </script>
+</body>
+</html>
