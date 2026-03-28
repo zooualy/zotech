@@ -1,6 +1,8 @@
 // ===== VÉRIFIER ADMIN =====
 const CODE_SECRET_ADMIN = 'Elhadji@24062022'
 
+let tentatives = 0
+
 function verifierCode() {
     const input = document.getElementById('input-code-secret')
     const erreur = document.getElementById('code-erreur')
@@ -10,6 +12,13 @@ function verifierCode() {
         document.getElementById('admin-lock').style.display = 'none'
         verifierAdminSuivi()
     } else {
+        tentatives++
+        if (tentatives >= 3) {
+            // Après 3 tentatives échouées → page 404
+            window.location.href = '404.html'
+            return
+        }
+        erreur.textContent = `❌ Code incorrect ! (${3 - tentatives} tentative(s) restante(s))`
         erreur.style.display = 'block'
         input.value = ''
         input.focus()
@@ -17,10 +26,28 @@ function verifierCode() {
 }
 
 async function verifierAdmin() {
-   // Toujours demander le code à chaque visite
+    const { data: sessionData } = await supabaseClient.auth.getSession()
+    const utilisateur = sessionData.session?.user || null
+
+    if (!utilisateur) {
+        window.location.href = '404.html'
+        return
+    }
+
+    const { data: profil } = await supabaseClient
+        .from('profils')
+        .select('est_admin')
+        .eq('user_id', utilisateur.id)
+        .single()
+
+    if (!profil?.est_admin) {
+        window.location.href = '404.html'
+        return
+    }
+
+   // Toujours demander le code secret
     sessionStorage.removeItem('admin_code')
-    // Afficher overlay
-    return
+    // L'overlay est déjà visible — ne rien faire
 }
 
 async function verifierAdminSuivi() {
