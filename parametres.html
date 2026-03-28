@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>ZoTech — Paramètres</title>
+    <link rel="icon" type="" href="/media/logo site choix .jpeg">
+    <link rel="stylesheet" href="style.css">
+    
+
+    <style>
+        .parametres-container {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .parametres-titre {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .parametres-section {
+            background: #1a1d2e;
+            border: 1px solid #252840;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .parametres-section-titre {
+            padding: 1rem 1.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #7c3aed;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #252840;
+        }
+
+        .parametres-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #1a1d2e;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .parametres-item:hover {
+            background: #252840;
+        }
+
+        .parametres-item:last-child {
+            border-bottom: none;
+        }
+
+        .parametres-item-gauche {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .parametres-item-icone {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .parametres-item-icone.violet {
+            background: rgba(124, 58, 237, 0.2);
+            color: #7c3aed;
+        }
+
+        .parametres-item-icone.bleu {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .parametres-item-icone.rouge {
+            background: rgba(226, 75, 74, 0.2);
+            color: #e24b4a;
+        }
+
+        .parametres-item-icone.vert {
+            background: rgba(29, 158, 117, 0.2);
+            color: #1D9E75;
+        }
+
+        .parametres-item-icone.orange {
+            background: rgba(239, 159, 39, 0.2);
+            color: #EF9F27;
+        }
+
+        .parametres-item-texte .titre {
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .parametres-item-texte .desc {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 0.2rem;
+        }
+
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: #252840;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.actif {
+            background: #7c3aed;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: left 0.3s;
+        }
+
+        .toggle-switch.actif::after {
+            left: 23px;
+        }
+
+        .parametres-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .parametres-modal.ouvert {
+            display: flex;
+        }
+
+        .parametres-modal-box {
+            background: #1a1d2e;
+            border: 1px solid #252840;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 420px;
+            width: 90%;
+        }
+
+        .parametres-modal-box h3 {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+        }
+
+        .parametres-modal-box input {
+            width: 100%;
+            background: #0f1117;
+            border: 1px solid #252840;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+        }
+
+        .parametres-modal-btns {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .parametres-container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <img src="/media/logo site choix .jpeg" style="height:38px; width:auto; object-fit:contain;">
+            <span class="logo-texte">ZoTech</span>
+        </a>
+        <button onclick="history.back()" class="btn-edit-profil" style="margin-left:auto;">
+            <i class="fa-solid fa-arrow-left"></i> Retour
+        </button>
+    </nav>
+
+    <div class="parametres-container">
+        <div class="parametres-titre">
+            <i class="fa-solid fa-gear" style="color:#7c3aed;"></i>
+            Paramètres
+        </div>
+
+        <!-- COMPTE -->
+        <div class="parametres-section">
+            <div class="parametres-section-titre">Compte</div>
+            <div class="parametres-item" onclick="ouvrirChangerMotDePasse()">
+                <div class="parametres-item-gauche">
+                    <div class="parametres-item-icone violet">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <div class="parametres-item-texte">
+                        <div class="titre">Changer le mot de passe</div>
+                        <div class="desc">Modifier ton mot de passe de connexion</div>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color:#94a3b8;"></i>
+            </div>
+        </div>
+
+        <!-- CONFIDENTIALITÉ -->
+        <div class="parametres-section">
+            <div class="parametres-section-titre">Confidentialité</div>
+            <div class="parametres-item">
+                <div class="parametres-item-gauche">
+                    <div class="parametres-item-icone bleu">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <div class="parametres-item-texte">
+                        <div class="titre">Compte privé</div>
+                        <div class="desc">Seuls tes abonnés voient tes publications</div>
+                    </div>
+                </div>
+                <div class="toggle-switch" id="toggle-prive" onclick="toggleComptePrive()"></div>
+            </div>
+            <div class="parametres-item" onclick="ouvrirListeBlockage()">
+                <div class="parametres-item-gauche">
+                    <div class="parametres-item-icone rouge">
+                        <i class="fa-solid fa-ban"></i>
+                    </div>
+                    <div class="parametres-item-texte">
+                        <div class="titre">Liste de blocage</div>
+                        <div class="desc">Gérer les utilisateurs bloqués</div>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color:#94a3b8;"></i>
+            </div>
+        </div>
+
+        <!-- DANGER -->
+        <div class="parametres-section">
+            <div class="parametres-section-titre">Zone de danger</div>
+            <div class="parametres-item" onclick="supprimerCompte()">
+                <div class="parametres-item-gauche">
+                    <div class="parametres-item-icone rouge">
+                        <i class="fa-solid fa-trash"></i>
+                    </div>
+                    <div class="parametres-item-texte">
+                        <div class="titre" style="color:#e24b4a;">Supprimer mon compte</div>
+                        <div class="desc">Cette action est irréversible</div>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color:#94a3b8;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CHANGER MOT DE PASSE -->
+    <div class="parametres-modal" id="modal-mdp">
+        <div class="parametres-modal-box">
+            <h3><i class="fa-solid fa-key" style="color:#7c3aed;"></i> Changer le mot de passe</h3>
+            <input type="password" id="mdp-nouveau" placeholder="Nouveau mot de passe">
+            <input type="password" id="mdp-confirmer" placeholder="Confirmer le mot de passe">
+            <p id="mdp-message" style="display:none; font-size:0.85rem; margin-bottom:0.5rem;"></p>
+            <div class="parametres-modal-btns">
+                <button class="btn-primary" style="flex:1" onclick="changerMotDePasse()">
+                    <i class="fa-solid fa-check"></i> Sauvegarder
+                </button>
+                <button class="btn-edit-profil" style="flex:1" onclick="fermerModalMdp()">
+                    Annuler
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LISTE BLOCAGE -->
+    <div class="parametres-modal" id="modal-blocage">
+        <div class="parametres-modal-box" style="max-width:500px;">
+            <h3><i class="fa-solid fa-ban" style="color:#e24b4a;"></i> Liste de blocage</h3>
+            <div style="margin-bottom:1rem;">
+                <input type="text" id="blocage-search" placeholder="Rechercher un utilisateur à bloquer..."
+                    oninput="rechercherUtilisateurBlocage(this.value)"
+                    style="width:100%; background:#0f1117; border:1px solid #252840; border-radius:10px; padding:0.85rem 1rem; color:#e2e8f0; font-size:0.9rem; box-sizing:border-box;">
+                <div id="blocage-suggestions" style="margin-top:0.5rem;"></div>
+            </div>
+            <div id="liste-bloques" style="max-height:250px; overflow-y:auto;"></div>
+            <button class="btn-edit-profil" style="width:100%; margin-top:1rem;" onclick="fermerModalBlocage()">
+                Fermer
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMATION -->
+    <div class="confirm-overlay" id="confirm-overlay">
+        <div class="confirm-box">
+            <div class="confirm-icone" id="confirm-icone">⚠️</div>
+            <div class="confirm-titre" id="confirm-titre">Confirmation</div>
+            <div class="confirm-message" id="confirm-message">Es-tu sûr ?</div>
+            <div class="confirm-boutons">
+                <button class="confirm-btn-annuler" onclick="fermerConfirm()">Annuler</button>
+                <button class="confirm-btn-confirmer" id="confirm-btn-ok">Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
+    <script src="toast.js"></script>
+    <script src="confirm.js"></script>
+    <script src="parametres.js"></script>
+</body>
+
+</html>

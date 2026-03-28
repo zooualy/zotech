@@ -43,32 +43,73 @@ async function chargerProfil() {
         return
     }
 
-   profilActuel = profil
-    estMonProfil = utilisateurConnecte?.id === profil.user_id
+profilActuel = profil
+estMonProfil = utilisateurConnecte?.id === profil.user_id
 
-    afficherProfil()
-    verifierAbonnement()
+// Vérifier si bloqué
+if (utilisateurConnecte && !estMonProfil) {
+    const { data: blocage } = await supabaseClient
+        .from('blocages')
+        .select('id')
+        .eq('bloqueur_id', utilisateurConnecte.id)
+        .eq('bloque_id', profil.user_id)
+        .single()
 
-    // Vérifier si le compte est banni
-    if (profil.banni && !estMonProfil) {
-        // Afficher le profil normalement mais bloquer les boutons
-        document.getElementById('profil-boutons').innerHTML = ''
-        
-        // Remplacer le contenu par message banni
-        document.querySelector('.profil-onglets').style.display = 'none'
-        document.querySelector('.profil-contenu').innerHTML = `
-            <div style="text-align:center; padding: 3rem 2rem;">
-                <div style="font-size: 3rem; margin-bottom:1rem;">🚫</div>
-                <h3 style="color:#e24b4a; margin-bottom:0.5rem;">Compte banni</h3>
-                <p style="color:#94a3b8; font-size:0.9rem;">Ce compte a été banni de ZoTech pour violation des règles de la communauté.</p>
+    if (blocage) {
+        document.querySelector('.profil-page').innerHTML = `
+            <div style="text-align:center; padding: 5rem 2rem;">
+                <div style="font-size: 4rem; margin-bottom:1rem;">🚫</div>
+                <h2 style="color:#e24b4a; margin-bottom:0.5rem;">Utilisateur bloqué</h2>
+                <p style="color:#94a3b8;">Tu as bloqué cet utilisateur.</p>
+                <a href="index.html" style="display:inline-block; margin-top:1.5rem; background:linear-gradient(135deg, #7c3aed, #3b82f6); color:white; padding:0.75rem 1.5rem; border-radius:12px; text-decoration:none;">
+                    <i class="fa-solid fa-house"></i> Retour à l'accueil
+                </a>
             </div>
         `
         return
     }
 
-    chargerPublications()
+    const { data: blocageInverse } = await supabaseClient
+        .from('blocages')
+        .select('id')
+        .eq('bloqueur_id', profil.user_id)
+        .eq('bloque_id', utilisateurConnecte.id)
+        .single()
+
+    if (blocageInverse) {
+        document.querySelector('.profil-page').innerHTML = `
+            <div style="text-align:center; padding: 5rem 2rem;">
+                <div style="font-size: 4rem; margin-bottom:1rem;">🚫</div>
+                <h2 style="color:#e24b4a; margin-bottom:0.5rem;">Profil inaccessible</h2>
+                <p style="color:#94a3b8;">Tu ne peux pas voir ce profil.</p>
+                <a href="index.html" style="display:inline-block; margin-top:1.5rem; background:linear-gradient(135deg, #7c3aed, #3b82f6); color:white; padding:0.75rem 1.5rem; border-radius:12px; text-decoration:none;">
+                    <i class="fa-solid fa-house"></i> Retour à l'accueil
+                </a>
+            </div>
+        `
+        return
+    }
 }
 
+// Vérifier si banni
+if (profil.banni && !estMonProfil) {
+    afficherProfil()
+    document.getElementById('profil-boutons').innerHTML = ''
+    document.querySelector('.profil-onglets').style.display = 'none'
+    document.querySelector('.profil-contenu').innerHTML = `
+        <div style="text-align:center; padding: 3rem 2rem;">
+            <div style="font-size: 3rem; margin-bottom:1rem;">🚫</div>
+            <h3 style="color:#e24b4a; margin-bottom:0.5rem;">Compte banni</h3>
+            <p style="color:#94a3b8; font-size:0.9rem;">Ce compte a été banni de ZoTech.</p>
+        </div>
+    `
+    return
+}
+
+afficherProfil()
+chargerPublications()
+verifierAbonnement()
+}
 // ===== AFFICHER LE PROFIL =====
 function afficherProfil() {
     const p = profilActuel
@@ -621,11 +662,14 @@ function toggleMenuProfil() {
             </button>
         `
     } else {
-      contenu.innerHTML = `
+     contenu.innerHTML = `
             <a href="#" class="profil-menu-item" onclick="partagerProfil(); fermerMenuProfil()">
                 <i class="fa-solid fa-link"></i> Partager le profil
             </a>
             <div class="profil-menu-divider"></div>
+            <button class="profil-menu-item danger" onclick="bloquerProfilActuel(); fermerMenuProfil()">
+                <i class="fa-solid fa-ban"></i> Bloquer
+            </button>
             <button class="profil-menu-item danger" onclick="signalerProfil(); fermerMenuProfil()">
                 <i class="fa-solid fa-flag"></i> Signaler ce profil
             </button>
@@ -646,9 +690,37 @@ document.addEventListener('click', (e) => {
     }
 })
 
-function ouvrirParametres() { fermerMenuProfil(); ouvrirEditModal() }
+function ouvrirParametres() { fermerMenuProfil(); window.location.href = 'parametres.html' }
 function ouvrirConfidentialite() { fermerMenuProfil(); afficherToast('Confidentialité — Bientôt disponible !', 'info') }
 function ouvrirAppareils() { fermerMenuProfil(); afficherToast('Appareils connectés — Bientôt disponible !', 'info') }
 
 // ===== LANCER =====
 window.addEventListener('load', chargerProfil)
+
+// ===== BLOQUER PROFIL =====
+async function bloquerProfilActuel() {
+    if (!utilisateurConnecte) {
+        ouvrirModal('connexion')
+        return
+    }
+
+    ouvrirConfirm({
+        icone: '🚫',
+        titre: 'Bloquer cet utilisateur',
+        message: `Tu veux bloquer @${profilActuel.username} ? Il ne pourra plus voir ton profil ni interagir avec toi.`,
+        texteBouton: 'Bloquer',
+        onConfirm: async () => {
+            const { error } = await supabaseClient
+                .from('blocages')
+                .insert([{
+                    bloqueur_id: utilisateurConnecte.id,
+                    bloque_id: profilActuel.user_id
+                }])
+
+            if (!error) {
+                afficherToast(`@${profilActuel.username} bloqué !`, 'succes')
+                setTimeout(() => window.location.href = 'index.html', 1500)
+            }
+        }
+    })
+}

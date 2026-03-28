@@ -79,7 +79,8 @@ async function afficherArticles() {
             .order('created_at', { ascending: false })
             .limit(20)
 
-        const userIds = [...new Set((articlesSupabase || []).filter(a => a.user_id).map(a => a.user_id))]
+       const { data: sessionData } = await supabaseClient.auth.getSession()
+        const utilisateurId = sessionData.session?.user?.id || null
         let profilsAuteurs = {}
 
         if (userIds.length > 0) {
@@ -109,8 +110,18 @@ async function afficherArticles() {
             source: 'supabase'
         }))
 
-        const articlesUne = articlesFormates.filter(a => a.featured)
-        const autresArticles = articlesFormates.filter(a => !a.est_pub)
+       // Récupérer les blocages
+        let idsBloques = []
+        if (utilisateurId) {
+            const { data: blocages } = await supabaseClient
+                .from('blocages')
+                .select('bloque_id')
+                .eq('bloqueur_id', utilisateurId)
+            if (blocages) idsBloques = blocages.map(b => b.bloque_id)
+        }
+
+        const articlesUne = articlesFormates.filter(a => a.featured && !idsBloques.includes(a.user_id))
+        const autresArticles = articlesFormates.filter(a => !a.est_pub && !idsBloques.includes(a.user_id))
 
         window._autresArticles = autresArticles
 
