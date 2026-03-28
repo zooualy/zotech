@@ -194,12 +194,15 @@ async function chargerPublications() {
             <td><span class="badge badge-article">${a.type_contenu || 'article'}</span></td>
             <td>${new Date(a.created_at).toLocaleDateString('fr-FR')}</td>
             <td style="display:flex; gap:0.5rem;">
-                <a href="article.html?id=${a.id}&src=supabase" target="_blank" class="admin-btn admin-btn-success">
-                    <i class="fa-solid fa-eye"></i> Voir
-                </a>
-                <button class="admin-btn admin-btn-danger" onclick="supprimerArticleAdmin(${a.id}, null)">
-                    <i class="fa-solid fa-trash"></i> Supprimer
-                </button>
+       <a href="article.html?id=${a.id}&src=supabase" target="_blank" class="admin-btn admin-btn-success">
+    <i class="fa-solid fa-eye"></i> Voir
+</a>
+<button class="admin-btn admin-btn-${a.featured ? 'warning' : 'success'}" onclick="toggleFeatured(${a.id}, ${a.featured})">
+    <i class="fa-solid fa-star"></i> ${a.featured ? 'Retirer une' : 'À la une'}
+</button>
+<button class="admin-btn admin-btn-danger" onclick="supprimerArticleAdmin(${a.id}, null)">
+    <i class="fa-solid fa-trash"></i> Supprimer
+</button>        
             </td>
         </tr>
     `).join('')
@@ -449,4 +452,14 @@ function rechercherAdmin(query) {
         const texte = ligne.textContent.toLowerCase()
         ligne.style.display = texte.includes(query) ? '' : 'none'
     })
+}
+
+// ===== TOGGLE À LA UNE =====
+async function toggleFeatured(articleId, estFeatured) {
+    await supabaseClient
+        .from('articles')
+        .update({ featured: !estFeatured })
+        .eq('id', articleId)
+    afficherToast(estFeatured ? 'Retiré de la une !' : 'Mis à la une !', 'succes')
+    chargerPublications()
 }
