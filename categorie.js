@@ -100,9 +100,9 @@ async function chargerArticles() {
         )
         : []
 
-    let query = supabaseClient
+   let query = supabaseClient
         .from('articles')
-        .eq('est_pub', false)
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(20)
 
