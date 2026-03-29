@@ -60,6 +60,7 @@ async function inscrire(email, motDePasse, pseudo, username) {
             user_id: data.user.id,
             username: username.toLowerCase(),
             pseudo: pseudo,
+            email: email,
             bio: '',
             photo_profil: '',
             photo_couverture: '',
@@ -87,7 +88,6 @@ async function connecter(email, motDePasse) {
         return
     }
 
-    // Vérifier si le compte est banni
     const { data: profil } = await supabaseClient
         .from('profils')
         .select('banni')
@@ -102,7 +102,9 @@ async function connecter(email, motDePasse) {
                 <div style="font-size:2rem; margin-bottom:0.5rem;">🚫</div>
                 <p style="color:#e24b4a; font-weight:600; margin-bottom:0.5rem;">Ton compte a été banni</p>
                 <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:1rem;">Si tu penses que c'est une erreur, contacte l'administration.</p>
-              
+                <a href="contestation.html" style="display:inline-block; background:linear-gradient(135deg, #7c3aed, #3b82f6); color:white; padding:0.6rem 1.2rem; border-radius:8px; text-decoration:none; font-size:0.85rem;">
+                    <i class="fa-solid fa-paper-plane"></i> Contester le bannissement
+                </a>
             </div>
         `
         msg.style.display = 'block'
@@ -131,15 +133,16 @@ async function deconnecter() {
     })
 }
 
-// ===== VÉRIFIER SI CONNECTÉ =====
+// ===== VÉRIFIER SESSION =====
 async function verifierSession() {
     const { data } = await supabaseClient.auth.getSession()
     if (data.session) {
-        mettreAJourNavbar(data.session.user)
+        await mettreAJourNavbar(data.session.user)
+    } else {
+        await mettreAJourNavbar(null)
     }
 }
 
-// ===== METTRE À JOUR LA NAVBAR =====
 // ===== METTRE À JOUR LA NAVBAR =====
 async function mettreAJourNavbar(user) {
     const navAuth = document.querySelector('.nav-auth')
@@ -159,39 +162,39 @@ async function mettreAJourNavbar(user) {
             ? `<img src="${photoUrl}" class="nav-avatar">`
             : `<div class="nav-avatar nav-avatar-initiale">${username.charAt(0).toUpperCase()}</div>`
 
-navAuth.innerHTML = `
-    <a href="profil.html?u=${username}" class="nav-auth-btn" style="text-decoration:none;">
-        ${avatarHtml}
-    </a>
-    <button class="nav-auth-btn nav-deconnexion nav-desktop-only" onclick="deconnecter()">
-        <i class="fa-solid fa-right-from-bracket"></i>
-        <span>Déconnexion</span>
-    </button>
-`
-} else {
         navAuth.innerHTML = `
-            <button class="btn-login" onclick="ouvrirModal('connexion')">Connexion</button>
-            <button class="btn-signup" onclick="ouvrirModal('inscription')">S'inscrire</button>
+            <a href="profil.html?u=${username}" class="nav-auth-btn" style="text-decoration:none;">
+                ${avatarHtml}
+            </a>
+            <button class="nav-auth-btn nav-deconnexion nav-desktop-only" onclick="deconnecter()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Déconnexion</span>
+            </button>
         `
-        navAuth.style.display = window.innerWidth <= 768 ? 'none' : 'flex'
+        navAuth.style.display = 'flex'
+
+    } else {
+        const estMobile = window.innerWidth <= 768 || /Android|iPhone|iPad/i.test(navigator.userAgent)
+        if (!estMobile) {
+            navAuth.innerHTML = `
+                <button class="btn-login" onclick="ouvrirModal('connexion')">Connexion</button>
+                <button class="btn-signup" onclick="ouvrirModal('inscription')">S'inscrire</button>
+            `
+            navAuth.style.display = 'flex'
+        } else {
+            navAuth.innerHTML = ''
+            navAuth.style.display = 'none'
+        }
     }
 }
 
-// ===== RÉINITIALISER LE FORMULAIRE =====
+// ===== RÉINITIALISER FORMULAIRE =====
 function reinitialiserFormulaire() {
-    const loginEmail = document.getElementById('login-email')
-    const loginPassword = document.getElementById('login-password')
-    if (loginEmail) loginEmail.value = ''
-    if (loginPassword) loginPassword.value = ''
-
-    const registerPseudo = document.getElementById('register-pseudo')
-    const registerUsername = document.getElementById('register-username')
-    const registerEmail = document.getElementById('register-email')
-    const registerPassword = document.getElementById('register-password')
-    if (registerPseudo) registerPseudo.value = ''
-    if (registerUsername) registerUsername.value = ''
-    if (registerEmail) registerEmail.value = ''
-    if (registerPassword) registerPassword.value = ''
+    const fields = ['login-email', 'login-password', 'register-pseudo', 'register-username', 'register-email', 'register-password']
+    fields.forEach(id => {
+        const el = document.getElementById(id)
+        if (el) el.value = ''
+    })
 
     const indicator = document.getElementById('username-indicator')
     if (indicator) indicator.textContent = ''
@@ -236,10 +239,10 @@ function afficherMessage(type, texte) {
     msg.style.display = 'block'
 }
 
-// ===== LANCER LA VÉRIFICATION AU CHARGEMENT =====
+// ===== LANCER =====
 window.addEventListener('load', verifierSession)
 
-// ===== VÉRIFICATION EN TEMPS RÉEL DU USERNAME =====
+// ===== VÉRIFICATION USERNAME =====
 let verificationTimer = null
 
 async function verifierUsername(username) {
@@ -293,7 +296,7 @@ async function verifierUsername(username) {
     }, 500)
 }
 
-// ===== VÉRIFIER SI MODIFICATION AUTORISÉE =====
+// ===== VÉRIFIER DÉLAI MODIFICATION =====
 async function verifierDelaiModification(userId, type) {
     const { data: profil } = await supabaseClient
         .from('profils')
@@ -310,10 +313,7 @@ async function verifierDelaiModification(userId, type) {
         const joursEcoules = Math.floor((maintenant - dernierChangement) / (1000 * 60 * 60 * 24))
         if (joursEcoules < 30) {
             const joursRestants = 30 - joursEcoules
-            return {
-                autorise: false,
-                message: `❌ Tu peux modifier ton nom d'utilisateur dans ${joursRestants} jour(s)`
-            }
+            return { autorise: false, message: `❌ Tu peux modifier ton nom d'utilisateur dans ${joursRestants} jour(s)` }
         }
     }
 
@@ -322,10 +322,7 @@ async function verifierDelaiModification(userId, type) {
         const joursEcoules = Math.floor((maintenant - dernierChangement) / (1000 * 60 * 60 * 24))
         if (joursEcoules < 7) {
             const joursRestants = 7 - joursEcoules
-            return {
-                autorise: false,
-                message: `❌ Tu peux modifier ton pseudo dans ${joursRestants} jour(s)`
-            }
+            return { autorise: false, message: `❌ Tu peux modifier ton pseudo dans ${joursRestants} jour(s)` }
         }
     }
 
@@ -335,14 +332,10 @@ async function verifierDelaiModification(userId, type) {
 // ===== MODIFIER USERNAME =====
 async function modifierUsername(userId, nouveauUsername) {
     const delai = await verifierDelaiModification(userId, 'username')
-    if (!delai.autorise) {
-        return { erreur: delai.message }
-    }
+    if (!delai.autorise) return { erreur: delai.message }
 
     const regles = /^[a-z0-9._]{3,30}$/
-    if (!regles.test(nouveauUsername.toLowerCase())) {
-        return { erreur: '❌ Nom d\'utilisateur invalide !' }
-    }
+    if (!regles.test(nouveauUsername.toLowerCase())) return { erreur: '❌ Nom d\'utilisateur invalide !' }
 
     const { data: existant } = await supabaseClient
         .from('profils')
@@ -350,16 +343,11 @@ async function modifierUsername(userId, nouveauUsername) {
         .eq('username', nouveauUsername.toLowerCase())
         .single()
 
-    if (existant) {
-        return { erreur: '❌ Ce nom d\'utilisateur est déjà pris !' }
-    }
+    if (existant) return { erreur: '❌ Ce nom d\'utilisateur est déjà pris !' }
 
     const { error } = await supabaseClient
         .from('profils')
-        .update({
-            username: nouveauUsername.toLowerCase(),
-            username_modifie_le: new Date().toISOString()
-        })
+        .update({ username: nouveauUsername.toLowerCase(), username_modifie_le: new Date().toISOString() })
         .eq('user_id', userId)
 
     if (error) return { erreur: '❌ Erreur : ' + error.message }
@@ -369,34 +357,13 @@ async function modifierUsername(userId, nouveauUsername) {
 // ===== MODIFIER PSEUDO =====
 async function modifierPseudo(userId, nouveauPseudo) {
     const delai = await verifierDelaiModification(userId, 'pseudo')
-    if (!delai.autorise) {
-        return { erreur: delai.message }
-    }
+    if (!delai.autorise) return { erreur: delai.message }
 
     const { error } = await supabaseClient
         .from('profils')
-        .update({
-            pseudo: nouveauPseudo,
-            pseudo_modifie_le: new Date().toISOString()
-        })
+        .update({ pseudo: nouveauPseudo, pseudo_modifie_le: new Date().toISOString() })
         .eq('user_id', userId)
 
     if (error) return { erreur: '❌ Erreur : ' + error.message }
     return { succes: '✅ Pseudo modifié avec succès !' }
 }
-
-// ===== TOGGLE AVATAR DROPDOWN =====
-function toggleAvatarDropdown() {
-    const dropdown = document.getElementById('avatar-dropdown')
-    if (!dropdown) return
-    dropdown.classList.toggle('ouvert')
-}
-
-// Fermer si on clique ailleurs
-document.addEventListener('click', (e) => {
-    const wrapper = document.querySelector('.nav-profil-wrapper')
-    if (wrapper && !wrapper.contains(e.target)) {
-        const dropdown = document.getElementById('avatar-dropdown')
-        if (dropdown) dropdown.classList.remove('ouvert')
-    }
-})

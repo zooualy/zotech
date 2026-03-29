@@ -11,8 +11,10 @@ function fermerMobileMenu() {
     const menu = document.getElementById('mobile-menu')
     if (menu) menu.classList.remove('ouvert')
     document.body.classList.remove('menu-ouvert')
+    document.body.style.overflow = ''
+    document.body.style.height = ''
+    document.body.style.touchAction = ''
 }
-
 async function mettreAJourMenuMobile() {
     const { data: sessionData } = await supabaseClient.auth.getSession()
     const utilisateur = sessionData.session?.user || null

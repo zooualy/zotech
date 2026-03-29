@@ -3305,11 +3305,10 @@ footer {
     overflow-y: auto;
     overscroll-behavior: contain;
 }
-
 body.menu-ouvert {
     overflow: hidden !important;
-    position: fixed !important;
-    width: 100% !important;
+    height: 100vh !important;
+    touch-action: none !important;
 }
 
 .mobile-menu-header {
@@ -3388,11 +3387,8 @@ body.menu-ouvert {
     }    
 }
 
-@media (max-width: 768px) {
-    .nav-auth {
-        display: none !important;
-    }
-}
+
+
 @media (max-width: 768px) {
     .tiktok-actions {
         flex-direction: row !important;
