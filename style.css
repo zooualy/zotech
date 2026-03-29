@@ -22,6 +22,8 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
 }
 /* HERO */
 
@@ -3502,11 +3504,9 @@ body.menu-ouvert {
     color: #7c3aed;
 }
 /* ===== FIX MOBILE ===== */
-* {
-    box-sizing: border-box;
-    max-width: 100%;
-}
-
-html {
+/* ===== FIX MOBILE ===== */
+html,
+body {
     overflow-x: hidden;
+    width: 100%;
 }
