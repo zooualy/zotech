@@ -160,28 +160,20 @@ async function mettreAJourNavbar(user) {
             : `<div class="nav-avatar nav-avatar-initiale">${username.charAt(0).toUpperCase()}</div>`
 
 navAuth.innerHTML = `
-            
-<div class="nav-auth-desktop">
-                <a href="profil.html?u=${username}" class="nav-auth-btn" style="text-decoration:none;">
-                    ${avatarHtml}
-                </a>
-                <button class="nav-auth-btn nav-deconnexion" onclick="deconnecter()">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Déconnexion</span>
-                </button>
-            </div>
-            <!-- VERSION MOBILE -->
-            <div class="nav-auth-mobile">
-                <a href="profil.html?u=${username}" style="text-decoration:none;">
-                    ${avatarHtml}
-                </a>
-            </div>
-        `
-    } else {
+    <a href="profil.html?u=${username}" class="nav-auth-btn" style="text-decoration:none;">
+        ${avatarHtml}
+    </a>
+    <button class="nav-auth-btn nav-deconnexion nav-desktop-only" onclick="deconnecter()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Déconnexion</span>
+    </button>
+`
+} else {
         navAuth.innerHTML = `
             <button class="btn-login" onclick="ouvrirModal('connexion')">Connexion</button>
             <button class="btn-signup" onclick="ouvrirModal('inscription')">S'inscrire</button>
         `
+        navAuth.style.display = window.innerWidth <= 768 ? 'none' : 'flex'
     }
 }
 

@@ -96,10 +96,10 @@
         <div class="notif-liste" id="notif-liste"></div>
     </div>
 </div>
-        <div class="nav-auth" id="nav-auth">
-            <button class="btn-login" onclick="ouvrirModal('connexion')">Connexion</button>
-            <button class="btn-signup" onclick="ouvrirModal('inscription')">S'inscrire</button>
-        </div>
+    <div class="nav-auth" id="nav-auth">
+        <button class="btn-login" onclick="ouvrirModal('connexion')">Connexion</button>
+        <button class="btn-signup" onclick="ouvrirModal('inscription')">S'inscrire</button>
+    </div>
     </nav>
 
     <!-- HERO -->
@@ -246,6 +246,18 @@
             <i class="fa-solid fa-pen-to-square"></i> Publier
         </a>
         <div style="margin-top:auto; padding-top:1rem; border-top:1px solid #252840;">
+            <!-- Boutons connexion/inscription pour mobile -->
+            <div id="menu-mobile-auth"
+                style="display:none; flex-direction:column; gap:0.5rem; padding:0.5rem 0; border-top:1px solid #252840; margin-top:0.5rem;">
+                <button onclick="ouvrirModal('connexion'); fermerMobileMenu()"
+                    style="width:100%; background:transparent; border:1px solid #7c3aed; color:#7c3aed; padding:0.85rem 1rem; border-radius:10px; cursor:pointer; font-size:0.9rem;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Connexion
+                </button>
+                <button onclick="ouvrirModal('inscription'); fermerMobileMenu()"
+                    style="width:100%; background:linear-gradient(135deg, #7c3aed, #3b82f6); border:none; color:white; padding:0.85rem 1rem; border-radius:10px; cursor:pointer; font-size:0.9rem;">
+                    <i class="fa-solid fa-user-plus"></i> S'inscrire
+                </button>
+            </div>
             <button id="menu-mobile-deconnexion"
                 style="width:100%; background:transparent; border:none; color:#e24b4a; padding:0.85rem 1rem; border-radius:10px; cursor:pointer; font-size:0.9rem; display:flex; align-items:center; gap:0.75rem;"
                 onclick="deconnecter(); fermerMobileMenu()">

@@ -20,11 +20,13 @@ async function mettreAJourMenuMobile() {
     const menuDeconnexion = document.getElementById('menu-mobile-deconnexion')
     if (!menuDeconnexion) return
 
+   const menuAuth = document.getElementById('menu-mobile-auth')
     if (utilisateur) {
         menuDeconnexion.style.display = 'flex'
+        if (menuAuth) menuAuth.style.display = 'none'
     } else {
         menuDeconnexion.style.display = 'none'
+        if (menuAuth) menuAuth.style.display = 'flex'
     }
 }
-
 window.addEventListener('load', mettreAJourMenuMobile)

@@ -71,6 +71,8 @@ body {
 
 .nav-auth {
     display: flex;
+    flex-direction: row;
+    align-items: center;
     gap: 0.75rem;
 }
 
@@ -3379,7 +3381,16 @@ body.menu-ouvert {
     .nav-auth-mobile {
         display: flex !important;
     }
+   .nav-desktop-only {
+        display: none !important;
+    }    
 }
+
+ @media (max-width: 768px) {
+     .nav-auth {
+         display: none;
+     }
+ }
 @media (max-width: 768px) {
     .tiktok-actions {
         flex-direction: row !important;
@@ -3509,4 +3520,43 @@ html,
 body {
     overflow-x: hidden;
     width: 100%;
+}
+/* ===== BOUTONS MENU MOBILE ===== */
+#menu-mobile-auth .btn-login-mobile {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #7c3aed;
+    color: #7c3aed;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s;
+}
+
+#menu-mobile-auth .btn-login-mobile:hover {
+    background: rgba(124, 58, 237, 0.1);
+}
+
+#menu-mobile-auth .btn-signup-mobile {
+    width: 100%;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    border: none;
+    color: white;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s;
+}
+
+#menu-mobile-auth .btn-signup-mobile:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
 }
