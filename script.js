@@ -267,3 +267,9 @@ function carouselPrev() {
     if (carouselTotal === 0) return
     allerCarousel((carouselIndex - 1 + carouselTotal) % carouselTotal)
 }
+
+// ===== OUVRIR UN ARTICLE =====
+function ouvrirArticle(id, source) {
+    source = source || 'supabase'
+    window.location.href = `article.html?id=${id}&src=${source}`
+}
