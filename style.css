@@ -3308,6 +3308,8 @@ footer {
 
 body.menu-ouvert {
     overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
 }
 
 .mobile-menu-header {
@@ -3386,11 +3388,11 @@ body.menu-ouvert {
     }    
 }
 
- @media (max-width: 768px) {
-     .nav-auth {
-         display: none;
-     }
- }
+@media (max-width: 768px) {
+    .nav-auth {
+        display: none !important;
+    }
+}
 @media (max-width: 768px) {
     .tiktok-actions {
         flex-direction: row !important;
