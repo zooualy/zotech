@@ -3477,3 +3477,26 @@ body.menu-ouvert {
 }
 
 /* CACHER ÉDITEUR PHOTO PAR DÉFAUT */
+/* ===== FILTRES RECHERCHE ===== */
+.recherche-filtre {
+    background: #252840;
+    border: 1px solid #252840;
+    color: #94a3b8;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.recherche-filtre.active {
+    background: #7c3aed;
+    border-color: #7c3aed;
+    color: white;
+}
+
+.recherche-filtre:hover {
+    border-color: #7c3aed;
+    color: #7c3aed;
+}

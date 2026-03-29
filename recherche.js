@@ -1,3 +1,34 @@
+// ===== HISTORIQUE DE RECHERCHE =====
+function sauvegarderHistorique(query) {
+    let historique = JSON.parse(localStorage.getItem('zotech_historique') || '[]')
+    historique = historique.filter(h => h !== query)
+    historique.unshift(query)
+    historique = historique.slice(0, 5)
+    localStorage.setItem('zotech_historique', JSON.stringify(historique))
+}
+
+function getHistorique() {
+    return JSON.parse(localStorage.getItem('zotech_historique') || '[]')
+}
+
+function supprimerHistorique(query) {
+    let historique = JSON.parse(localStorage.getItem('zotech_historique') || '[]')
+    historique = historique.filter(h => h !== query)
+    localStorage.setItem('zotech_historique', JSON.stringify(historique))
+    afficherSuggestionsPopulaires()
+}
+
+// ===== FILTRE CATÉGORIE =====
+let filtreCategorie = 'tous'
+
+function changerFiltreRecherche(cat) {
+    filtreCategorie = cat
+    document.querySelectorAll('.recherche-filtre').forEach(f => f.classList.remove('active'))
+    event.target.classList.add('active')
+    const query = document.getElementById('search-input').value
+    if (query.length >= 2) rechercherEnTempsReel(query)
+}
+
 // ===== OUVRIR/FERMER RECHERCHE =====
 function ouvrirRecherche() {
     const overlay = document.getElementById('recherche-overlay')
@@ -7,9 +38,11 @@ function ouvrirRecherche() {
         afficherSuggestionsPopulaires()
     }, 100)
 }
+
 function fermerRecherche() {
     document.getElementById('recherche-overlay').style.display = 'none'
     document.getElementById('search-input').value = ''
+    filtreCategorie = 'tous'
     document.getElementById('search-resultats').innerHTML = `
         <div class="search-vide">
             <div style="font-size: 3rem;">🔍</div>
@@ -45,16 +78,18 @@ async function rechercherEnTempsReel(query) {
     `
 
     rechercheTimer = setTimeout(async () => {
+        sauvegarderHistorique(query)
         const [profils, contenus] = await Promise.all([
             rechercherProfils(query),
             rechercherContenus(query)
         ])
         afficherResultatsRecherche(profils, contenus, query)
-    }, 400)
+    }, 300)
 }
 
 // ===== SUGGESTIONS POPULAIRES =====
 function afficherSuggestionsPopulaires() {
+    const historique = getHistorique()
     const suggestions = [
         { texte: '🤖 Intelligence artificielle', query: 'intelligence artificielle' },
         { texte: '💻 Tutoriels VS Code', query: 'VS Code' },
@@ -64,15 +99,27 @@ function afficherSuggestionsPopulaires() {
         { texte: '🎯 ChatGPT et Claude', query: 'ChatGPT Claude' },
     ]
 
-    document.getElementById('search-resultats').innerHTML = `
-        <div class="search-section-titre">🔥 Tendances</div>
-        ${suggestions.map(s => `
-            <div class="search-suggestion" onclick="utiliserSuggestion('${s.query}')">
-                <span>${s.texte}</span>
-                <span style="color:#606070; font-size:0.8rem;">↗</span>
+    let html = ''
+
+    if (historique.length > 0) {
+        html += `<div class="search-section-titre">🕐 Recherches récentes</div>`
+        html += historique.map(h => `
+            <div class="search-suggestion" style="display:flex; justify-content:space-between; align-items:center;">
+                <span onclick="utiliserSuggestion('${h}')" style="flex:1; cursor:pointer;">🕐 ${h}</span>
+                <button onclick="supprimerHistorique('${h}')" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:0.8rem;">✕</button>
             </div>
-        `).join('')}
-    `
+        `).join('')
+    }
+
+    html += `<div class="search-section-titre">🔥 Tendances</div>`
+    html += suggestions.map(s => `
+        <div class="search-suggestion" onclick="utiliserSuggestion('${s.query}')">
+            <span>${s.texte}</span>
+            <span style="color:#606070; font-size:0.8rem;">↗️</span>
+        </div>
+    `).join('')
+
+    document.getElementById('search-resultats').innerHTML = html
 }
 
 // ===== SUGGESTIONS RAPIDES =====
@@ -88,7 +135,6 @@ async function afficherSuggestionsRapides(query) {
         s.toLowerCase().includes(query.toLowerCase())
     )
 
-    // Chercher aussi des profils
     const { data: profils } = await supabaseClient
         .from('profils')
         .select('username, pseudo, photo_profil')
@@ -102,7 +148,7 @@ async function afficherSuggestionsRapides(query) {
         html += filtrees.slice(0, 5).map(s => `
             <div class="search-suggestion" onclick="utiliserSuggestion('${s}')">
                 <span>🔍 ${s}</span>
-                <span style="color:#606070; font-size:0.8rem;">↗</span>
+                <span style="color:#606070; font-size:0.8rem;">↗️</span>
             </div>
         `).join('')
     }
@@ -143,23 +189,6 @@ function utiliserSuggestion(query) {
     input.value = query
     rechercherEnTempsReel(query)
 }
-    document.getElementById('search-resultats').innerHTML = `
-        <div class="search-vide">
-            <div style="font-size: 2rem;">⏳</div>
-            <p>Recherche en cours...</p>
-        </div>
-    `
-
-   rechercheTimer = setTimeout(async () => {
-        const searchQuery = document.getElementById('search-input')?.value || ''
-        if (!searchQuery) return
-        const [profils, contenus] = await Promise.all([
-            rechercherProfils(searchQuery),
-            rechercherContenus(searchQuery)
-        ])
-        afficherResultatsRecherche(profils, contenus, searchQuery)
-    }, 400)
-
 
 async function rechercherProfils(query) {
     const { data } = await supabaseClient
@@ -169,31 +198,47 @@ async function rechercherProfils(query) {
         .limit(5)
     return data || []
 }
-
+// ===== NORMALISER ACCENTS =====
+function normaliserTexte(texte) {
+    return texte
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+}
 async function rechercherContenus(query) {
-    const motsCles = await extraireMotsClesAvecIA(query)
-    const termes = [query, ...motsCles]
+    const motsCles = extraireMotsClesAvecIA(query) || []
+    const queryNormalisee = normaliserTexte(query)
+    const termes = [...new Set([query, queryNormalisee, ...motsCles])]
     let tousLesResultats = []
 
     for (const terme of termes) {
-        const { data } = await supabaseClient
+        let q = supabaseClient
             .from('articles')
             .select('*')
-            .or(`titre.ilike.%${terme}%,description.ilike.%${terme}%,hashtags.ilike.%${terme}%,contenu.ilike.%${terme}%,tag.ilike.%${terme}%`)
-            .limit(6)
+        const { data } = await supabaseClient
+            .rpc('search_articles', { search_term: terme })
         if (data) tousLesResultats = [...tousLesResultats, ...data]
+        continue
+
+        if (filtreCategorie !== 'tous') {
+            if (filtreCategorie === 'IA') q = q.in('tag', ['IA', 'Tech'])
+            else if (filtreCategorie === 'TutorielAstuce') q = q.in('tag', ['Tutoriel', 'Astuce'])
+            else q = q.eq('tag', filtreCategorie)
+        }
+
+       
     }
 
     const ids = new Set()
-    return [...tousLesResultats].filter(a => {
-        const key = a.id || a.titre
+    return tousLesResultats.filter(a => {
+        const key = a.id
         if (ids.has(key)) return false
         ids.add(key)
         return true
     }).slice(0, 8)
 }
 
-// ===== EXTRAIRE MOTS CLÉS INTELLIGEMMENT (sans API) =====
+// ===== EXTRAIRE MOTS CLÉS =====
 function extraireMotsClesAvecIA(query) {
     const motsVides = ['comment', 'faire', 'pour', 'avec', 'dans', 'les', 'des',
         'une', 'que', 'qui', 'est', 'sur', 'par', 'tout', 'mais', 'ou',
@@ -211,83 +256,36 @@ function extraireMotsClesAvecIA(query) {
         'artificielle': ['IA', 'Claude', 'ChatGPT', 'intelligence'],
         'ia': ['intelligence artificielle', 'IA', 'Claude', 'ChatGPT', 'machine learning'],
         'application': ['app', 'mobile', 'no-code'],
-        'appli': ['app', 'mobile', 'application'],
         'site': ['web', 'HTML', 'internet', 'créer'],
-        'automatiser': ['automatisation', 'astuce', 'IA'],
-        'outil': ['logiciel', 'app', 'astuce'],
         'video': ['vidéo', 'tutoriel', 'youtube'],
-        'extension': ['VS Code', 'plugin', 'outil'],
-        'debuter': ['débutant', 'tutoriel', 'apprendre', 'commencer'],
+        'tuto': ['tutoriel'],
         'debutant': ['tutoriel', 'apprendre', 'commencer', 'facile'],
-        'facile': ['simple', 'tutoriel', 'astuce', 'débutant'],
-        'meilleur': ['top', 'astuce', 'outil', 'recommandation'],
-        'nouveau': ['nouveauté', 'news', 'récent', '2026'],
-        'creer': ['créer', 'créateur', 'tutoriel', 'faire'],
+        'meilleur': ['top', 'astuce', 'outil'],
     }
 
-    // Nettoyer la requête — enlever apostrophes et articles collés
-    const queryNettoyee = query
-        .toLowerCase()
-        .replace(/l'/g, ' ')
-        .replace(/d'/g, ' ')
-        .replace(/j'/g, ' ')
-        .replace(/n'/g, ' ')
-        .replace(/s'/g, ' ')
-        .replace(/c'/g, ' ')
-        .replace(/qu'/g, ' ')
-
-    // Extraire les mots importants
-    const mots = queryNettoyee
-        .split(/\s+/)
-        .map(m => m.replace(/[^a-zA-ZàâäéèêëîïôùûüÿçÀÂÄÉÈÊËÎÏÔÙÛÜŸÇ]/g, ''))
-        .filter(m => m.length > 2 && !motsVides.includes(m))
-
-    // Corriger les fautes communes
-  const corrections = {
+    const corrections = {
         'inteligence': 'intelligence',
         'artificiell': 'artificielle',
-        'aprendere': 'apprendre',
         'tutoril': 'tutoriel',
-        'astuc': 'astuce',
         'programation': 'programmation',
-        'developper': 'développer',
-        'creer': 'créer',
-        'utilser': 'utiliser',
-        'machie': 'machine',
-        'lerning': 'learning',
         'chatgp': 'ChatGPT',
         'claud': 'Claude',
         'technolgie': 'technologie',
-        'technologie': 'technologie',
-        'inteligent': 'intelligent',
-        'artifiel': 'artificiel',
         'publie': 'publication',
-        'publier': 'publication',
         'video': 'vidéo',
-        'photo': 'photo',
-        'tuto': 'tutoriel',
-        'astuces': 'astuce',
-        'nouvelles': 'news',
-        'nouvell': 'news',
-        'nouveau': 'nouveauté',
-        'nouveaute': 'nouveauté',
-        'zotech': 'ZoTech',
-        'zotec': 'ZoTech',
-        'android': 'mobile',
-        'iphone': 'mobile',
-        'telephone': 'mobile',
-        'ordi': 'ordinateur',
-        'ordinateur': 'ordinateur',
-        'laptop': 'ordinateur',
-        'internet': 'web',
-        'website': 'site web',
         'appli': 'application',
-        'logiciel': 'application',
-    } 
+    }
+
+    const queryNettoyee = query.toLowerCase()
+        .replace(/l'/g, ' ').replace(/d'/g, ' ').replace(/j'/g, ' ')
+        .replace(/n'/g, ' ').replace(/s'/g, ' ').replace(/c'/g, ' ')
+
+    const mots = queryNettoyee.split(/\s+/)
+        .map(m => m.replace(/[^a-zA-ZàâäéèêëîïôùûüÿçÀÂÄÉÈÊËÎÏÔÙÛÜŸÇ]/g, ''))
+        .filter(m => m.length > 2 && !motsVides.includes(m))
 
     const motsCorrigés = mots.map(m => corrections[m] || m)
 
-    // Ajouter les synonymes
     const motsCles = [...motsCorrigés]
     motsCorrigés.forEach(mot => {
         const syns = synonymes[mot.toLowerCase()]
@@ -296,23 +294,36 @@ function extraireMotsClesAvecIA(query) {
 
     return [...new Set(motsCles)]
 }
+
 async function afficherResultatsRecherche(profils, contenus, query) {
     const container = document.getElementById('search-resultats')
+    const total = profils.length + contenus.length
 
-    if (profils.length === 0 && contenus.length === 0) {
+    if (total === 0) {
         container.innerHTML = `
             <div class="search-vide">
                 <div style="font-size: 3rem;">😕</div>
                 <p>Aucun résultat pour "<strong>${query}</strong>"</p>
+                <p style="font-size:0.85rem; color:#94a3b8; margin-top:0.5rem;">Essaie avec d'autres mots clés</p>
             </div>
         `
         return
     }
 
-    let html = ''
+    let html = `
+        <div style="padding:0.75rem 1rem; color:#94a3b8; font-size:0.82rem; border-bottom:1px solid #252840;">
+            ${total} résultat${total > 1 ? 's' : ''} pour "<strong style="color:#7c3aed;">${query}</strong>"
+        </div>
+        <div style="display:flex; gap:0.5rem; padding:0.75rem 1rem; border-bottom:1px solid #252840; overflow-x:auto;">
+            <button class="recherche-filtre ${filtreCategorie === 'tous' ? 'active' : ''}" onclick="changerFiltreRecherche('tous')">Tous</button>
+            <button class="recherche-filtre ${filtreCategorie === 'IA' ? 'active' : ''}" onclick="changerFiltreRecherche('IA')">🤖 IA</button>
+            <button class="recherche-filtre ${filtreCategorie === 'TutorielAstuce' ? 'active' : ''}" onclick="changerFiltreRecherche('TutorielAstuce')">📚 Tutoriels</button>
+            <button class="recherche-filtre ${filtreCategorie === 'News' ? 'active' : ''}" onclick="changerFiltreRecherche('News')">📰 News</button>
+        </div>
+    `
 
     if (profils.length > 0) {
-        html += `<div class="search-section-titre">👤 Profils</div>`
+        html += `<div class="search-section-titre">👤 Profils (${profils.length})</div>`
         html += profils.map(p => `
             <a href="profil.html?u=${p.username}" class="search-item" onclick="fermerRecherche()">
                 <div class="search-item-avatar" style="${p.photo_profil ? 'background:none;' : ''}">
@@ -330,10 +341,9 @@ async function afficherResultatsRecherche(profils, contenus, query) {
     }
 
     if (contenus.length > 0) {
-        html += `<div class="search-section-titre">📝 Contenus</div>`
+        html += `<div class="search-section-titre">📝 Contenus (${contenus.length})</div>`
 
         const userIds = [...new Set(contenus.filter(a => a.user_id).map(a => a.user_id))]
-        const nomsAuteurs = [...new Set(contenus.filter(a => !a.user_id && a.auteur).map(a => a.auteur))]
         let profilsAuteurs = {}
 
         if (userIds.length > 0) {
@@ -344,34 +354,25 @@ async function afficherResultatsRecherche(profils, contenus, query) {
             if (auteurs) auteurs.forEach(p => profilsAuteurs[p.user_id] = p)
         }
 
-        if (nomsAuteurs.length > 0) {
-            const { data: auteursByNom } = await supabaseClient
-                .from('profils')
-                .select('user_id, username, photo_profil, pseudo')
-                .in('pseudo', nomsAuteurs)
-            if (auteursByNom) auteursByNom.forEach(p => profilsAuteurs[p.pseudo] = p)
-        }
-
         html += contenus.map(a => {
-            const auteur = profilsAuteurs[a.user_id] || profilsAuteurs[a.auteur]
-            const bgAuteur = auteur?.photo_profil ? 'background:none;' : ''
+            const auteur = profilsAuteurs[a.user_id]
             const photoAuteur = auteur?.photo_profil
                 ? `<img src="${auteur.photo_profil}" alt="${a.auteur}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
                 : (a.auteur || '?').charAt(0).toUpperCase()
 
             return `
                 <div class="search-item-contenu">
-              <a href="article.html?id=${a.id}&src=supabase" class="search-item" onclick="fermerRecherche()" style="flex:1">      
+                    <a href="article.html?id=${a.id}&src=supabase" class="search-item" onclick="fermerRecherche()" style="flex:1">
                         <div class="search-item-avatar" style="background:#1e1e2e;font-size:1.2rem;">
                             ${a.emoji || '📝'}
                         </div>
                         <div class="search-item-info">
                             <div class="search-item-nom">${a.titre}</div>
-                            <div class="search-item-sub">${a.tag}</div>
+                            <div class="search-item-sub"><span class="card-tag" style="font-size:0.7rem; padding:0.1rem 0.4rem;">${a.tag}</span></div>
                         </div>
                     </a>
                     <a href="profil.html?u=${auteur?.username || ''}" class="search-auteur" onclick="fermerRecherche()">
-                        <div class="search-auteur-avatar" style="${bgAuteur}">
+                        <div class="search-auteur-avatar" style="${auteur?.photo_profil ? 'background:none;' : ''}">
                             ${photoAuteur}
                         </div>
                         <span>${a.auteur}</span>

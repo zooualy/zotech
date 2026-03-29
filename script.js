@@ -273,3 +273,20 @@ function ouvrirArticle(id, source) {
     source = source || 'supabase'
     window.location.href = `article.html?id=${id}&src=${source}`
 }
+// ===== TRIER ARTICLES =====
+function trierArticles(tri) {
+    const latest = document.getElementById('latest-posts')
+    if (!latest || !window._autresArticles) return
+
+    let articlesTries = [...window._autresArticles]
+
+    if (tri === 'recent') {
+        articlesTries.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    } else if (tri === 'ancien') {
+        articlesTries.sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+    } else if (tri === 'tag') {
+        articlesTries.sort((a, b) => (a.tag || '').localeCompare(b.tag || ''))
+    }
+
+    latest.innerHTML = articlesTries.map(creerCarte).join('')
+}
