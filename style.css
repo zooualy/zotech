@@ -8,6 +8,7 @@ body {
     font-family: 'Inter', sans-serif;
     background-color:#0f1117;
     color: #ffffff;
+    overflow-x: hidden;
 }
 
 /* NAVBAR */
@@ -3499,4 +3500,13 @@ body.menu-ouvert {
 .recherche-filtre:hover {
     border-color: #7c3aed;
     color: #7c3aed;
+}
+/* ===== FIX MOBILE ===== */
+* {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+html {
+    overflow-x: hidden;
 }
