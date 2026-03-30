@@ -2794,10 +2794,14 @@ footer {
 .nav-avatar-dropdown .btn-deconnexion {
     color: #e24b4a !important;
 }
+
 /* ===== NAVBAR ÉPURÉE ===== */
 .navbar {
     padding: 0.75rem 2rem !important;
     gap: 0.75rem !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
 }
 
 .nav-links {
@@ -3574,10 +3578,14 @@ body.menu-ouvert {
 }
 /* ===== FIX MOBILE ===== */
 /* ===== FIX MOBILE ===== */
-html,
-body {
+html {
     overflow-x: hidden;
     width: 100%;
+}
+
+body {
+    width: 100%;
+    overflow-x: clip;
 }
 /* ===== BOUTONS MENU MOBILE ===== */
 #menu-mobile-auth .btn-login-mobile {
