@@ -1786,6 +1786,22 @@ footer {
      margin-bottom: 2rem;
  }
 
+@media (max-width: 470px) {
+    .commentaire-form {
+        flex-direction: column !important;
+    }
+
+    .commentaire-form textarea {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .commentaire-form .btn-primary {
+        width: 100% !important;
+        align-self: stretch !important;
+    }
+}
+
  .commentaire-form textarea {
      width: 100%;
      padding: 0.85rem 1rem;
@@ -1804,10 +1820,17 @@ footer {
      border-color: #7c3aed;
  }
 
- .commentaire-form .btn-primary {
-     align-self: flex-end;
-     padding: 0.6rem 1.5rem;
- }
+.commentaire-form .btn-primary {
+    align-self: flex-end;
+    padding: 0.6rem 1.5rem;
+}
+@media (max-width: 480px) {
+    .commentaire-form .btn-primary {
+        align-self: stretch !important;
+        width: 100% !important;
+        padding: 0.75rem !important;
+    }
+}
 
  /* LISTE COMMENTAIRES */
  .commentaire-item {
@@ -1877,6 +1900,38 @@ footer {
      padding: 2rem;
      color: #606070;
      font-size: 0.9rem;
+
+    .commentaire-form textarea {
+            min-height: 100px !important;
+            font-size: 0.9rem !important;
+        }
+    
+        .commentaire-form {
+            padding: 0 0.5rem !important;
+        }
+    
+        .notif-dropdown {
+            width: 95vw !important;
+            right: -10px !important;
+            left: auto !important;
+        }
+
+                .commentaire-form .btn-primary {
+                    width: 100% !important;
+                    align-self: stretch !important;
+                    padding: 0.75rem !important;
+                }
+        
+                .reponse-form textarea {
+                    min-height: 80px !important;
+                    font-size: 0.9rem !important;
+                    width: 100% !important;
+                }
+        
+                .reponse-form .btn-primary {
+                    width: 100% !important;
+                    padding: 0.75rem !important;
+                }
  }
 
 
@@ -3240,6 +3295,11 @@ footer {
         height: 30px !important;
         font-size: 0.9rem !important;
     }
+        .notif-dropdown {
+            width: 95vw !important;
+            right: -10px !important;
+            left: auto !important;
+        }
 }
 
 /* ===== RESPONSIVE TABLETTE ===== */

@@ -155,14 +155,13 @@
         <!-- FORMULAIRE FIXE -->
         <div class="commentaires-modal-form">
             <div id="commentaire-form-modal">
-                <div style="display:flex; gap:0.75rem;">
-                    <textarea id="commentaire-input" placeholder="Écris un commentaire..."
-                        style="flex:1; padding:0.75rem; border-radius:10px; border:1px solid #1e1e2e; background:#0a0a0f; color:#fff; font-family:Inter,sans-serif; resize:none; height:70px;"></textarea>
-                    <button class="btn-primary" style="align-self:flex-end; padding:0.6rem 1rem;"
-                        onclick="publierCommentaire()">
-                        Publier
-                    </button>
-                </div>
+            <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                <textarea id="commentaire-input" placeholder="Écris un commentaire..."
+                    style="width:100%; padding:0.75rem; border-radius:10px; border:1px solid #1e1e2e; background:#0a0a0f; color:#fff; font-family:Inter,sans-serif; resize:none; height:70px; box-sizing:border-box;"></textarea>
+                <button class="btn-primary" style="width:100%; padding:0.75rem 1rem;" onclick="publierCommentaire()">
+                    Publier
+                </button>
+            </div>
             </div>
             <div id="non-connecte-commentaire" style="display:none;">
                 <p style="color:#a0a0b0; font-size:0.9rem;">
