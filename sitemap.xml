@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://zotech.netlify.app/</loc>
+        <loc>https://zotech.technology/</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://zotech.netlify.app/categorie.html?cat=IA</loc>
+        <loc>https://zotech.technology/categorie.html?cat=IA</loc>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://zotech.netlify.app/categorie.html?cat=TutorielAstuce</loc>
+        <loc>https://zotech.technology/categorie.html?cat=TutorielAstuce</loc>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://zotech.netlify.app/categorie.html?cat=News</loc>
+        <loc>https://zotech.technology/categorie.html?cat=News</loc>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
