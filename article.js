@@ -106,7 +106,7 @@ const articlesContenu = {
 async function afficherArticle() {
     const params = new URLSearchParams(window.location.search)
     const id = params.get('id')
-    const src = params.get('src') || 'local'
+    const src = params.get('src') || 'supabase'
 
     if (!id) {
         window.location.href = 'index.html'
