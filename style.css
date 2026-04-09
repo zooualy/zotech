@@ -2342,7 +2342,6 @@ footer {
     background-position: center !important;
     background-repeat: no-repeat !important;
 }
-
 /* BOUTONS PROFIL ALIGNÉS */
 .btn-edit-profil,
 .btn-partager {
@@ -2676,20 +2675,24 @@ footer {
  .commentaire-texte {
      color: #94a3b8 !important;
  }
+/* PHOTOS VERTICALES DANS LES CARTES */
+.card-image {
+    height: 220px !important;
+    overflow: hidden !important;
+    object-fit: cover !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
 
- /* PHOTOS VERTICALES DANS LES CARTES */
- .card-image {
-     height: 200px !important;
-     overflow: hidden !important;
-     object-fit: cover !important;
- }
+.card-image img {
+    width: 100% !important;
+    height: 220px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+}
+ 
 
- .card-image img {
-     width: 100% !important;
-     height: 200px !important;
-     object-fit: cover !important;
-     object-position: center top !important;
- }
+ 
 
  /* PHOTO COUVERTURE ARTICLE */
  #article-emoji {
@@ -3209,8 +3212,28 @@ footer {
     border-left: 3px solid #7c3aed;
 }
 
+/* ===== CARDS GRID DESKTOP ===== */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 0;
+}
+
+@media (min-width: 1400px) {
+    .cards-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1399px) {
+    .cards-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
 
 /* ===== RESPONSIVE MOBILE ===== */
+
 @media (max-width: 768px) {
 
     /* NAVBAR */
@@ -3241,6 +3264,20 @@ footer {
     }
 
     /* CARDS GRID */
+
+        @media (max-width: 768px) {
+            .card-image {
+                height: 280px !important;
+                background-size: cover !important;
+                background-position: center !important;
+            }
+    
+            .card-image img {
+                height: 180px !important;
+                width: 100% !important;
+                object-fit: cover !important;
+            }
+        }
     .cards-grid {
         grid-template-columns: 1fr !important;
         gap: 1rem !important;
