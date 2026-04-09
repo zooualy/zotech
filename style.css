@@ -1522,15 +1522,22 @@ footer {
      background: transparent;
      border: 1px solid #252840;
      color: #a0a0b0;
-     width: 28px;
-     height: 28px;
-     border-radius: 6px;
+     width: 36px;
+     height: 36px;
+     border-radius: 8px;
      cursor: pointer;
-     font-size: 0.8rem;
+     font-size: 0.9rem;
      display: flex;
      align-items: center;
      justify-content: center;
      transition: all 0.2s;
+ }
+
+ .card-action-btn:hover {
+     background: #252840;
+     color: #ffffff;
+     border-color: #7c3aed;
+     transform: translateY(-2px);
  }
 
  .card-action-btn:hover {

@@ -105,7 +105,26 @@ if (profil.banni && !estMonProfil) {
     `
     return
 }
+    const p = profilActuel
+// Recalculer les vrais compteurs
+const { count: nbAbonnes } = await supabaseClient
+    .from('abonnements')
+    .select('*', { count: 'exact', head: true })
+    .eq('cible_id', profil.user_id)
 
+const { count: nbAbonnements } = await supabaseClient
+    .from('abonnements')
+    .select('*', { count: 'exact', head: true })
+    .eq('abonne_id', profil.user_id)
+
+profilActuel.abonnes = nbAbonnes || 0
+profilActuel.abonnements = nbAbonnements || 0
+    const couverture = document.getElementById('profil-couverture')
+    if (p.photo_couverture) {
+        couverture.style.backgroundImage = `url(${p.photo_couverture})`
+        couverture.style.backgroundSize = 'cover'
+        couverture.style.backgroundPosition = 'center'
+    }
 afficherProfil()
 chargerPublications()
 verifierAbonnement()
@@ -723,4 +742,75 @@ async function bloquerProfilActuel() {
             }
         }
     })
+}
+
+// ===== LISTE ABONNÉS/ABONNEMENTS =====
+async function ouvrirListeAbonnes() {
+    document.getElementById('modal-abonnes-titre').textContent = '👥 Abonnés'
+    document.getElementById('modal-abonnes').style.display = 'flex'
+    
+    const { data: abonnes } = await supabaseClient
+        .from('abonnements')
+        .select('abonne_id')
+        .eq('cible_id', profilActuel.user_id)
+
+    if (!abonnes || abonnes.length === 0) {
+        document.getElementById('modal-abonnes-liste').innerHTML = '<p style="text-align:center; color:#94a3b8; padding:2rem;">Aucun abonné pour le moment</p>'
+        return
+    }
+
+    const ids = abonnes.map(a => a.abonne_id)
+    const { data: profils } = await supabaseClient
+        .from('profils')
+        .select('user_id, pseudo, username, photo_profil')
+        .in('user_id', ids)
+
+    document.getElementById('modal-abonnes-liste').innerHTML = (profils || []).map(p => `
+        <a href="profil.html?u=${p.username}" onclick="fermerModalAbonnes()" style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem 0; border-bottom:1px solid #252840; text-decoration:none;">
+            <div style="width:40px; height:40px; border-radius:50%; background:#7c3aed; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;">
+                ${p.photo_profil ? `<img src="${p.photo_profil}" style="width:100%;height:100%;object-fit:cover;">` : (p.pseudo || p.username).charAt(0).toUpperCase()}
+            </div>
+            <div>
+                <div style="color:#ffffff; font-weight:500; font-size:0.9rem;">${p.pseudo}</div>
+                <div style="color:#7c3aed; font-size:0.8rem;">@${p.username}</div>
+            </div>
+        </a>
+    `).join('')
+}
+
+async function ouvrirListeAbonnements() {
+    document.getElementById('modal-abonnes-titre').textContent = '👤 Abonnements'
+    document.getElementById('modal-abonnes').style.display = 'flex'
+
+    const { data: abonnements } = await supabaseClient
+        .from('abonnements')
+        .select('cible_id')
+        .eq('abonne_id', profilActuel.user_id)
+
+    if (!abonnements || abonnements.length === 0) {
+        document.getElementById('modal-abonnes-liste').innerHTML = '<p style="text-align:center; color:#94a3b8; padding:2rem;">Aucun abonnement pour le moment</p>'
+        return
+    }
+
+    const ids = abonnements.map(a => a.cible_id)
+    const { data: profils } = await supabaseClient
+        .from('profils')
+        .select('user_id, pseudo, username, photo_profil')
+        .in('user_id', ids)
+
+    document.getElementById('modal-abonnes-liste').innerHTML = (profils || []).map(p => `
+        <a href="profil.html?u=${p.username}" onclick="fermerModalAbonnes()" style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem 0; border-bottom:1px solid #252840; text-decoration:none;">
+            <div style="width:40px; height:40px; border-radius:50%; background:#7c3aed; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;">
+                ${p.photo_profil ? `<img src="${p.photo_profil}" style="width:100%;height:100%;object-fit:cover;">` : (p.pseudo || p.username).charAt(0).toUpperCase()}
+            </div>
+            <div>
+                <div style="color:#ffffff; font-weight:500; font-size:0.9rem;">${p.pseudo}</div>
+                <div style="color:#7c3aed; font-size:0.8rem;">@${p.username}</div>
+            </div>
+        </a>
+    `).join('')
+}
+
+function fermerModalAbonnes() {
+    document.getElementById('modal-abonnes').style.display = 'none'
 }
