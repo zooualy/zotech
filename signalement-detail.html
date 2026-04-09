@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZoTech — Détail signalement</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="admin.html" class="nav-logo">
+            <span class="logo-texte">← Admin</span>
+        </a>
+    </nav>
+
+    <div style="max-width:800px; margin:2rem auto; padding:0 1.5rem;">
+        <div id="detail-contenu"></div>
+    </div>
+
+    <div class="confirm-overlay" id="confirm-overlay">
+        <div class="confirm-box">
+            <div class="confirm-icone" id="confirm-icone">⚠️</div>
+            <div class="confirm-titre" id="confirm-titre">Confirmation</div>
+            <div class="confirm-message" id="confirm-message">Es-tu sûr ?</div>
+            <div class="confirm-boutons">
+                <button class="confirm-btn-annuler" onclick="fermerConfirm()">Annuler</button>
+                <button class="confirm-btn-confirmer" id="confirm-btn-ok">Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
+    <script src="toast.js"></script>
+    <script src="confirm.js"></script>
+    <script src="signalement-detail.js"></script>
+    <script>
+        // Vérifier que c'est bien un admin
+        window.addEventListener('load', async () => {
+            const { data: sessionData } = await supabaseClient.auth.getSession()
+            const utilisateur = sessionData.session?.user || null
+
+            if (!utilisateur) {
+                window.location.href = 'index.html'
+                return
+            }
+
+            const { data: profil } = await supabaseClient
+                .from('profils')
+                .select('est_admin')
+                .eq('user_id', utilisateur.id)
+                .single()
+
+            if (!profil?.est_admin) {
+                window.location.href = '404.html'
+                return
+            }
+        })
+    </script>
+</body>
+
+</html>

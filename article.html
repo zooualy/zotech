@@ -122,11 +122,37 @@
 </div>
 
 <!-- PARTAGER -->
-<div class="tiktok-btn-wrapper">
-    <button class="tiktok-btn" onclick="partagerArticleActuel()">
+<div class="tiktok-btn-wrapper" style="position:relative;">
+    <button class="tiktok-btn" onclick="toggleMenuPartage()">
         <i class="fa-solid fa-share-nodes"></i>
     </button>
     <span class="tiktok-count">Partager</span>
+
+    <!-- MENU PARTAGE -->
+    <div id="menu-partage"
+        style="display:none; position:absolute; bottom:60px; right:0; background:#1a1d2e; border:1px solid #252840; border-radius:12px; padding:0.5rem; z-index:100; width:180px; box-shadow:0 10px 30px rgba(0,0,0,0.4);">
+        <button onclick="partagerSur('whatsapp')"
+            style="width:100%; background:transparent; border:none; color:#e2e8f0; padding:0.6rem 1rem; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:0.75rem; font-size:0.85rem;">
+            <i class="fa-brands fa-whatsapp" style="color:#25D366; font-size:1.1rem;"></i> WhatsApp
+        </button>
+        <button onclick="partagerSur('facebook')"
+            style="width:100%; background:transparent; border:none; color:#e2e8f0; padding:0.6rem 1rem; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:0.75rem; font-size:0.85rem;">
+            <i class="fa-brands fa-facebook" style="color:#1877F2; font-size:1.1rem;"></i> Facebook
+        </button>
+        <button onclick="partagerSur('twitter')"
+            style="width:100%; background:transparent; border:none; color:#e2e8f0; padding:0.6rem 1rem; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:0.75rem; font-size:0.85rem;">
+            <i class="fa-brands fa-x-twitter" style="color:#ffffff; font-size:1.1rem;"></i> Twitter/X
+        </button>
+        <button onclick="partagerSur('telegram')"
+            style="width:100%; background:transparent; border:none; color:#e2e8f0; padding:0.6rem 1rem; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:0.75rem; font-size:0.85rem;">
+            <i class="fa-brands fa-telegram" style="color:#0088cc; font-size:1.1rem;"></i> Telegram
+        </button>
+        <div style="height:1px; background:#252840; margin:0.25rem 0;"></div>
+        <button onclick="partagerSur('copier')"
+            style="width:100%; background:transparent; border:none; color:#e2e8f0; padding:0.6rem 1rem; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:0.75rem; font-size:0.85rem;">
+            <i class="fa-solid fa-link" style="color:#7c3aed; font-size:1.1rem;"></i> Copier le lien
+        </button>
+    </div>
 </div>
 
 <!-- FAVORIS -->

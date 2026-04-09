@@ -302,3 +302,38 @@ async function ouvrirCommentaireDepuisNotification() {
 // ===== LANCER =====
 document.addEventListener('DOMContentLoaded', afficherArticle)
 window.addEventListener('load', ouvrirCommentaireDepuisNotification)
+
+// ===== MENU PARTAGE =====
+function toggleMenuPartage() {
+    const menu = document.getElementById('menu-partage')
+    menu.style.display = menu.style.display === 'none' ? 'block' : 'none'
+}
+
+function partagerSur(reseau) {
+    const url = `https://zotech.technology/article.html?id=${new URLSearchParams(window.location.search).get('id')}&src=supabase`
+    const titre = document.getElementById('article-titre')?.textContent || 'ZoTech'
+    const texte = `${titre} — Découvre cet article sur ZoTech !`
+
+    let lien = ''
+    if (reseau === 'whatsapp') lien = `https://wa.me/?text=${encodeURIComponent(texte + ' ' + url)}`
+    else if (reseau === 'facebook') lien = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
+    else if (reseau === 'twitter') lien = `https://twitter.com/intent/tweet?text=${encodeURIComponent(texte)}&url=${encodeURIComponent(url)}`
+    else if (reseau === 'telegram') lien = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(texte)}`
+    else if (reseau === 'copier') {
+        navigator.clipboard.writeText(url)
+        afficherToast('Lien copié !', 'succes')
+        document.getElementById('menu-partage').style.display = 'none'
+        return
+    }
+
+    window.open(lien, '_blank')
+    document.getElementById('menu-partage').style.display = 'none'
+}
+
+// Fermer menu si on clique ailleurs
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('menu-partage')
+    if (menu && !e.target.closest('.tiktok-btn-wrapper')) {
+        menu.style.display = 'none'
+    }
+})

@@ -14,7 +14,6 @@ function verifierCode() {
     } else {
         tentatives++
         if (tentatives >= 3) {
-            // Après 3 tentatives échouées → page 404
             window.location.href = '404.html'
             return
         }
@@ -45,9 +44,7 @@ async function verifierAdmin() {
         return
     }
 
-   // Toujours demander le code secret
     sessionStorage.removeItem('admin_code')
-    // L'overlay est déjà visible — ne rien faire
 }
 
 async function verifierAdminSuivi() {
@@ -73,6 +70,7 @@ async function verifierAdminSuivi() {
     chargerStats()
     chargerSignalements()
 }
+
 // ===== STATS =====
 async function chargerStats() {
     const { count: totalUsers } = await supabaseClient
@@ -108,8 +106,8 @@ function changerOngletAdmin(onglet) {
 
     if (onglet === 'signalements') chargerSignalements()
     else if (onglet === 'publications') chargerPublications()
-   else if (onglet === 'utilisateurs') chargerUtilisateurs()
-else if (onglet === 'contestations') chargerContestations()
+    else if (onglet === 'utilisateurs') chargerUtilisateurs()
+    else if (onglet === 'contestations') chargerContestations()
 }
 
 // ===== SIGNALEMENTS =====
@@ -122,11 +120,10 @@ async function chargerSignalements() {
     const tbody = document.getElementById('tbody-signalements')
 
     if (!signalements || signalements.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="admin-vide">Aucun signalement 🎉</td></tr>'
+        tbody.innerHTML = '<tr><td colspan="8" class="admin-vide">Aucun signalement 🎉</td></tr>'
         return
     }
 
-    // Récupérer les articles signalés
     const articleIds = signalements.filter(s => s.article_id).map(s => s.article_id)
     let articles = {}
     if (articleIds.length > 0) {
@@ -137,7 +134,6 @@ async function chargerSignalements() {
         if (arts) arts.forEach(a => articles[a.id] = a)
     }
 
-    // Récupérer les commentaires signalés
     const commentaireIds = signalements.filter(s => s.commentaire_id).map(s => s.commentaire_id)
     let commentaires = {}
     if (commentaireIds.length > 0) {
@@ -148,7 +144,6 @@ async function chargerSignalements() {
         if (comms) comms.forEach(c => commentaires[c.id] = c)
     }
 
-    // Récupérer les profils des signaleurs
     const userIds = [...new Set(signalements.map(s => s.user_id).filter(Boolean))]
     let profils = {}
     if (userIds.length > 0) {
@@ -159,17 +154,28 @@ async function chargerSignalements() {
         if (profs) profs.forEach(p => profils[p.user_id] = p)
     }
 
-    tbody.innerHTML = signalements.map(s => {
+    // Grouper par article
+    const grouped = {}
+    signalements.forEach(s => {
+        const key = s.article_id || s.commentaire_id || 'profil'
+        if (!grouped[key]) {
+            grouped[key] = { ...s, count: 0 }
+        }
+        grouped[key].count++
+    })
+
+    const groupedArray = Object.values(grouped).sort((a, b) => b.count - a.count)
+
+    tbody.innerHTML = groupedArray.map(s => {
         const signaleur = profils[s.user_id]
         const article = s.article_id ? articles[s.article_id] : null
         const commentaire = s.commentaire_id ? commentaires[s.commentaire_id] : null
 
-        // Contenu signalé
         let contenuSignale = '—'
         let lienContenu = ''
         if (article) {
             contenuSignale = `📝 <strong>${article.titre}</strong><br><small>par ${article.auteur}</small>`
-            lienContenu = `<a href="article.html?id=${s.article_id}&src=supabase" target="_blank" class="admin-btn admin-btn-success"><i class="fa-solid fa-eye"></i> Voir</a>`
+            lienContenu = `<a href="signalement-detail.html?article_id=${s.article_id}" class="admin-btn admin-btn-success"><i class="fa-solid fa-eye"></i> Voir détails</a>`
         } else if (commentaire) {
             contenuSignale = `💬 <em>"${commentaire.contenu?.substring(0, 60)}..."</em>`
         } else if (s.type === 'profil') {
@@ -182,15 +188,15 @@ async function chargerSignalements() {
                 <td style="max-width:250px;">${contenuSignale}</td>
                 <td>${signaleur ? `<a href="profil.html?u=${signaleur.username}" target="_blank" style="color:#7c3aed;">@${signaleur.username}</a>` : '—'}</td>
                 <td>${s.raison}</td>
+                <td>
+                    <span style="background:rgba(226,75,74,0.15); color:#e24b4a; padding:0.25rem 0.6rem; border-radius:20px; font-size:0.8rem; font-weight:600;">
+                        🚩 ${s.count}
+                    </span>
+                </td>
                 <td>${new Date(s.created_at).toLocaleDateString('fr-FR')}</td>
                 <td><span class="badge badge-${s.statut === 'en_attente' ? 'attente' : 'traite'}">${s.statut}</span></td>
                 <td style="display:flex; gap:0.5rem; flex-wrap:wrap;">
                     ${lienContenu}
-                    ${s.type === 'article' && s.article_id ? `
-                        <button class="admin-btn admin-btn-danger" onclick="supprimerArticleAdmin(${s.article_id}, ${s.id})">
-                            <i class="fa-solid fa-trash"></i> Supprimer
-                        </button>
-                    ` : ''}
                     <button class="admin-btn admin-btn-success" onclick="marquerTraite(${s.id})">
                         <i class="fa-solid fa-check"></i> Traité
                     </button>
@@ -199,6 +205,7 @@ async function chargerSignalements() {
         `
     }).join('')
 }
+
 // ===== PUBLICATIONS =====
 async function chargerPublications() {
     const { data: articles } = await supabaseClient
@@ -214,25 +221,25 @@ async function chargerPublications() {
         return
     }
 
-   tbody.innerHTML = articles.map(a => `
+    tbody.innerHTML = articles.map(a => `
         <tr>
             <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${a.titre}</td>
             <td><a href="profil.html?u=${a.username_auteur}" target="_blank" style="color:#7c3aed;">@${a.username_auteur || a.auteur}</a></td>
             <td><span class="badge badge-article">${a.type_contenu || 'article'}</span></td>
             <td>${new Date(a.created_at).toLocaleDateString('fr-FR')}</td>
-            <td style="display:flex; gap:0.5rem;">
-       <a href="article.html?id=${a.id}&src=supabase" target="_blank" class="admin-btn admin-btn-success">
-    <i class="fa-solid fa-eye"></i> Voir
-</a>
-<a href="publier.html?edit=${a.id}" target="_blank" class="admin-btn admin-btn-warning">
-    <i class="fa-solid fa-pen"></i> Modifier
-</a>
-<button class="admin-btn admin-btn-${a.featured ? 'warning' : 'success'}" onclick="toggleFeatured(${a.id}, ${a.featured})">
-    <i class="fa-solid fa-star"></i> ${a.featured ? 'Retirer une' : 'À la une'}
-</button>
-<button class="admin-btn admin-btn-danger" onclick="supprimerArticleAdmin(${a.id}, null)">
-    <i class="fa-solid fa-trash"></i> Supprimer
-</button>        
+            <td style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <a href="article.html?id=${a.id}&src=supabase" target="_blank" class="admin-btn admin-btn-success">
+                    <i class="fa-solid fa-eye"></i> Voir
+                </a>
+                <a href="publier.html?edit=${a.id}" target="_blank" class="admin-btn admin-btn-warning">
+                    <i class="fa-solid fa-pen"></i> Modifier
+                </a>
+                <button class="admin-btn admin-btn-${a.featured ? 'warning' : 'success'}" onclick="toggleFeatured(${a.id}, ${a.featured === true})">
+                    <i class="fa-solid fa-star"></i> ${a.featured ? 'Retirer une' : 'À la une'}
+                </button>
+                <button class="admin-btn admin-btn-danger" onclick="supprimerArticleAdmin(${a.id}, null)">
+                    <i class="fa-solid fa-trash"></i> Supprimer
+                </button>
             </td>
         </tr>
     `).join('')
@@ -254,24 +261,20 @@ async function chargerUtilisateurs() {
 
     tbody.innerHTML = utilisateurs.map(u => `
         <tr>
-            <td>${u.pseudo}</td>
-            <td>@${u.username}</td>
+            <td>${u.pseudo || u.username}</td>
+            <td><a href="profil.html?u=${u.username}" target="_blank" style="color:#7c3aed;">@${u.username}</a></td>
             <td>${u.abonnes || 0}</td>
             <td>
-                <span class="badge ${u.est_admin ? 'badge-traite' : u.banni ? 'badge-attente' : ''}">
-                    ${u.est_admin ? 'Admin' : u.banni ? 'Banni' : 'Actif'}
-                </span>
+                ${u.banni ? '<span class="badge badge-article">Banni</span>' : '<span class="badge badge-traite">Actif</span>'}
+                ${u.est_admin ? '<span class="badge badge-attente">Admin</span>' : ''}
             </td>
-            <td style="display:flex; gap:0.5rem;">
-                <a href="profil.html?u=${u.username}" class="admin-btn admin-btn-success" target="_blank">
+            <td style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <a href="profil.html?u=${u.username}" target="_blank" class="admin-btn admin-btn-success">
                     <i class="fa-solid fa-eye"></i> Voir
                 </a>
-                ${!u.est_admin ? `
-                <button class="admin-btn admin-btn-${u.banni ? 'success' : 'warning'}"
-                onclick="toggleBannir('${u.user_id}', ${u.banni === true})"
+                <button class="admin-btn admin-btn-${u.banni ? 'success' : 'warning'}" onclick="toggleBannir('${u.user_id}', '${u.banni}')">
                     <i class="fa-solid fa-${u.banni ? 'unlock' : 'ban'}"></i> ${u.banni ? 'Débannir' : 'Bannir'}
                 </button>
-                ` : ''}
             </td>
         </tr>
     `).join('')
@@ -310,15 +313,13 @@ async function marquerTraite(signalementId) {
 // ===== BANNIR UTILISATEUR =====
 async function toggleBannir(userId, estBanni) {
     estBanni = estBanni === true || estBanni === 'true'
-    estBanni = estBanni === true || estBanni === 'true'
-    
+
     ouvrirConfirm({
         icone: estBanni ? '🔓' : '🚫',
         titre: estBanni ? 'Débannir l\'utilisateur' : 'Bannir l\'utilisateur',
         message: estBanni ? 'Tu veux débannir cet utilisateur ?' : 'Tu veux bannir cet utilisateur ?',
         texteBouton: estBanni ? 'Débannir' : 'Bannir',
         onConfirm: async () => {
-            console.log('onConfirm exécuté, estBanni:', estBanni)
             await supabaseClient
                 .from('profils')
                 .update({ banni: !estBanni })
@@ -330,8 +331,6 @@ async function toggleBannir(userId, estBanni) {
                     .select('pseudo, username, email')
                     .eq('user_id', userId)
                     .single()
-
-                console.log('Profil:', profil)
 
                 if (profil) {
                     emailjs.send('service_bwyz99l', 'template_j509wig', {
@@ -350,10 +349,6 @@ async function toggleBannir(userId, estBanni) {
     })
 }
 
-// ===== LANCER =====
-window.addEventListener('load', verifierAdmin)
-
-
 // ===== CONTESTATIONS =====
 async function chargerContestations() {
     const { data: contestations } = await supabaseClient
@@ -368,7 +363,6 @@ async function chargerContestations() {
         return
     }
 
-    // Compter non lues
     const nonLues = contestations.filter(c => !c.lu).length
     const titre = document.querySelector('[onclick="changerOngletAdmin(\'contestations\')"]')
     if (titre) {
@@ -399,30 +393,27 @@ async function chargerContestations() {
 }
 
 async function marquerContestationLue(id) {
-    await supabaseClient
-        .from('contestations')
-        .update({ lu: true })
-        .eq('id', id)
+    await supabaseClient.from('contestations').update({ lu: true }).eq('id', id)
     chargerContestations()
 }
+
 async function debannirDepuisContestation(username, contestationId) {
     await supabaseClient.from('profils').update({ banni: false }).eq('username', username)
     await supabaseClient.from('contestations').update({ statut: 'accepte' }).eq('id', contestationId)
-    
-    // Récupérer l'email de l'utilisateur
-  const { data: profil } = await supabaseClient
+
+    const { data: profil } = await supabaseClient
         .from('profils')
         .select('pseudo, username, email')
         .eq('username', username)
         .single()
 
-    // Envoyer email via EmailJS
-    if (profil) {
-        const { data: profil } = await supabaseClient
-                    .from('profils')
-                    .select('pseudo, username, email')
-                    .eq('user_id', userId)
-                    .single()
+    if (profil?.email) {
+        emailjs.send('service_bwyz99l', 'template_j509wig', {
+            pseudo: profil.pseudo || profil.username,
+            username: profil.username,
+            email: profil.email,
+            name: 'ZoTech'
+        })
     }
 
     afficherToast('Utilisateur débanni !', 'succes')
@@ -430,7 +421,6 @@ async function debannirDepuisContestation(username, contestationId) {
 }
 
 async function rejeterContestation(contestationId) {
-    // Récupérer les infos de la contestation
     const { data: contestation } = await supabaseClient
         .from('contestations')
         .select('username')
@@ -450,8 +440,7 @@ async function rejeterContestation(contestationId) {
                 username: profil.username,
                 email: profil.email,
                 name: 'ZoTech'
-            }).then(() => console.log('Email rejet envoyé !'))
-            .catch(err => console.log('Erreur:', err))
+            })
         }
     }
 
@@ -466,14 +455,12 @@ function rechercherAdmin(query) {
     const ongletActif = document.querySelector('.admin-onglet.active')?.textContent.trim()
 
     if (!query) {
-        // Recharger sans filtre
         if (ongletActif?.includes('Utilisateurs')) chargerUtilisateurs()
         else if (ongletActif?.includes('Publications')) chargerPublications()
         else if (ongletActif?.includes('Signalements')) chargerSignalements()
         return
     }
 
-    // Filtrer les lignes visibles
     const tbody = document.querySelector('.admin-section.active tbody')
     if (!tbody) return
 
@@ -493,3 +480,6 @@ async function toggleFeatured(articleId, estFeatured) {
     afficherToast(estFeatured ? 'Retiré de la une !' : 'Mis à la une !', 'succes')
     chargerPublications()
 }
+
+// ===== LANCER =====
+window.addEventListener('load', verifierAdmin)

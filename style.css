@@ -2175,12 +2175,79 @@ footer {
 }
 
 /* ===== CONTENU ARTICLE STYLÉ ===== */
+
 .article-content {
-    font-size: 1.05rem;
-    line-height: 1.9;
-    color: #d0d0e0;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: #c8c8e0;
     max-width: 750px;
-    margin: 2rem auto;
+    margin: 1.5rem auto;
+    background: #0e1122;
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    border: 1px solid #1e2133;
+}
+
+.article-content p {
+    margin-bottom: 1rem;
+    color: #c0c0d8;
+}
+
+.article-content h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 1.75rem 0 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #1e2133;
+}
+
+.article-content h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #a78bfa;
+    margin: 1.5rem 0 0.5rem;
+}
+
+.article-content blockquote {
+    border-left: 3px solid #7c3aed;
+    background: rgba(124, 58, 237, 0.06);
+    padding: 0.75rem 1.25rem;
+    border-radius: 0 10px 10px 0;
+    margin: 1rem 0;
+    color: #a78bfa;
+    font-style: italic;
+    font-size: 0.95rem;
+}
+
+.article-content strong {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.article-content ul,
+.article-content ol {
+    margin: 0.75rem 0 1rem 1.5rem;
+    color: #c0c0d8;
+}
+
+.article-content li {
+    margin-bottom: 0.4rem;
+}
+
+.article-content ul li::marker {
+    color: #7c3aed;
+}
+
+.article-content code {
+    background: #252840;
+    color: #a78bfa;
+    padding: 0.15rem 0.4rem;
+    border-radius: 5px;
+    font-size: 0.88rem;
 }
 
 .article-content h2 {
@@ -3632,4 +3699,52 @@ body {
 #menu-mobile-auth .btn-signup-mobile:hover {
     opacity: 0.9;
     transform: translateY(-1px);
+}
+
+/* ===== MENU PARTAGE ===== */
+#menu-partage button:hover {
+    background: #252840 !important;
+    transform: translateX(3px);
+    transition: all 0.2s;
+}
+
+#menu-partage button {
+    transition: all 0.2s;
+}
+
+#menu-partage {
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== STATS PROFIL CLIQUABLES ===== */
+.stat {
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0.5rem;
+    border-radius: 10px;
+}
+
+.stat:hover {
+    background: rgba(124, 58, 237, 0.1);
+    transform: translateY(-2px);
+}
+
+.stat:hover .stat-nombre {
+    color: #7c3aed;
+}
+
+.stat:hover .stat-label {
+    color: #a78bfa;
 }
