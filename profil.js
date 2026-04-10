@@ -150,8 +150,12 @@ function afficherProfil() {
     } else {
         initiale.textContent = (p.pseudo || p.username).charAt(0).toUpperCase()
     }
-
-    document.getElementById('profil-pseudo').textContent = p.pseudo || p.username
+document.title = `${p.pseudo || p.username} (@${p.username}) - ZoTech`
+document.querySelector('meta[property="og:title"]')?.setAttribute('content', `${p.pseudo} sur ZoTech`)
+document.querySelector('meta[property="og:description"]')?.setAttribute('content', p.bio || 'Découvre ce profil sur ZoTech.')
+document.querySelector('meta[name="description"]')?.setAttribute('content', p.bio || 'Découvre ce profil sur ZoTech.')
+document.querySelector('meta[property="og:url"]')?.setAttribute('content', window.location.href)
+   
     document.getElementById('profil-username').textContent = '@' + p.username
     document.getElementById('profil-bio').textContent = p.bio || 'Aucune bio pour le moment'
     document.getElementById('stat-abonnes').textContent = p.abonnes || 0

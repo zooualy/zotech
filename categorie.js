@@ -59,7 +59,9 @@ async function initialiserCategorie() {
         titre: categorieActuelle,
         desc: 'Tous les contenus de cette catégorie'
     }
-
+document.title = `ZoTech — ${categorieActuelle}`
+document.querySelector('meta[property="og:title"]')?.setAttribute('content', `ZoTech — ${categorieActuelle}`)
+document.querySelector('meta[property="og:url"]')?.setAttribute('content', window.location.href)
     document.getElementById('categorie-emoji').textContent = config.emoji
     document.getElementById('categorie-titre').textContent = config.titre
     document.getElementById('categorie-desc').textContent = config.desc

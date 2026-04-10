@@ -143,6 +143,11 @@ async function afficherArticle() {
 
     // Remplir les infos
     document.title = `${article.titre} - ZoTech`
+document.querySelector('meta[property="og:title"]')?.setAttribute('content', `${article.titre} - ZoTech`)
+document.querySelector('meta[property="og:description"]')?.setAttribute('content', article.description || '')
+document.querySelector('meta[name="description"]')?.setAttribute('content', article.description || '')
+document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', `${article.titre} - ZoTech`)
+document.querySelector('meta[property="og:url"]')?.setAttribute('content', window.location.href)
     document.getElementById('article-tag').textContent = article.tag
     document.getElementById('article-titre').textContent = article.titre
 
