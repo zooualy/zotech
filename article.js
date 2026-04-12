@@ -200,19 +200,53 @@ document.querySelector('meta[property="og:url"]')?.setAttribute('content', windo
     const emojiDiv = document.getElementById('article-emoji')
     
     if (article.type_contenu === 'video' && article.url_video) {
-        // Vidéo → afficher la vidéo directement
+    const estTikTok = article.url_video.includes('tiktok.com')
+    const estYoutube = article.url_video.includes('youtube.com') || article.url_video.includes('youtu.be')
+
+   if (estTikTok) {
+    const miniature = article.url_miniature_tiktok || ''
+    emojiDiv.innerHTML = `
+        <div style="position:relative; width:100%; border-radius:12px; overflow:hidden; background:#000; min-height:300px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:1.5rem;">
+            ${miniature ? `
+                <img src="${miniature}" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.7;">
+            ` : ''}
+            <div style="text-align:center; position:relative; z-index:1;">
+                <div style="font-size:4rem; margin-bottom:1rem;">🎵</div>
+                <p style="color:#ffffff; font-size:1rem; font-weight:600; margin-bottom:0.5rem;">Vidéo TikTok</p>
+                <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:1.5rem;">Cette vidéo est disponible sur TikTok</p>
+                <a href="${article.url_video}" target="_blank" 
+                    style="background:linear-gradient(135deg,#ff0050,#ff0080); color:white; padding:0.85rem 2rem; border-radius:10px; text-decoration:none; font-weight:600; font-size:0.95rem; display:inline-flex; align-items:center; gap:0.5rem;">
+                    <i class="fa-brands fa-tiktok"></i> Voir sur TikTok
+                </a>
+            </div>
+        </div>
+    `
+
+    } else if (estYoutube) {
+        // YouTube → iframe normal
+        let urlEmbed = article.url_video
+        if (urlEmbed.includes('youtu.be/')) {
+            urlEmbed = urlEmbed.replace('youtu.be/', 'youtube.com/embed/')
+        } else if (urlEmbed.includes('watch?v=')) {
+            urlEmbed = urlEmbed.replace('watch?v=', 'embed/')
+        }
         emojiDiv.innerHTML = `
             <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:12px; width:100%;">
-                <iframe 
-                    src="${article.url_video}" 
-                    style="position:absolute; top:0; left:0; width:100%; height:100%; border:none; border-radius:12px;"
-                    allowfullscreen>
-                </iframe>
+                <iframe src="${urlEmbed}" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none; border-radius:12px;" allowfullscreen></iframe>
             </div>
         `
-        emojiDiv.style.minHeight = 'auto'
-        emojiDiv.style.background = 'none'
-        emojiDiv.style.padding = '0'
+    } else {
+        // Autre vidéo
+        emojiDiv.innerHTML = `
+            <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:12px; width:100%;">
+                <iframe src="${article.url_video}" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none; border-radius:12px;" allowfullscreen></iframe>
+            </div>
+        `
+    }
+    emojiDiv.style.minHeight = 'auto'
+    emojiDiv.style.background = 'none'
+    emojiDiv.style.padding = '0'
+
 
     } else if (article.type_contenu === 'photo' && article.url_image) {
         // Photo → afficher toutes les photos

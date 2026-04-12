@@ -156,7 +156,7 @@ document.querySelector('meta[property="og:description"]')?.setAttribute('content
 document.querySelector('meta[name="description"]')?.setAttribute('content', p.bio || 'Découvre ce profil sur ZoTech.')
 document.querySelector('meta[property="og:url"]')?.setAttribute('content', window.location.href)
    
-    document.getElementById('profil-username').textContent = '@' + p.username
+  document.getElementById('profil-pseudo').textContent = p.pseudo || p.username
     document.getElementById('profil-bio').textContent = p.bio || 'Aucune bio pour le moment'
     document.getElementById('stat-abonnes').textContent = p.abonnes || 0
     document.getElementById('stat-abonnements').textContent = p.abonnements || 0

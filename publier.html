@@ -215,6 +215,20 @@
                 <small>Colle le lien de ta vidéo YouTube ou TikTok</small>
             </div>
 
+        <!-- MINIATURE TIKTOK -->
+        <div class="form-group" id="champ-miniature-tiktok" style="display:none">
+            <label>🖼️ Image miniature (optionnel)</label>
+            <div class="upload-zone" id="upload-zone-miniature"
+                onclick="document.getElementById('pub-miniature-tiktok').click()">
+                <i class="fa-solid fa-image"></i>
+                <p>Clique pour ajouter une miniature</p>
+                <small>JPG, PNG — max 5MB</small>
+            </div>
+            <input type="file" id="pub-miniature-tiktok" accept="image/*" style="display:none"
+                onchange="previewMiniature(this)">
+            <img id="preview-miniature" style="display:none; width:100%; border-radius:10px; margin-top:0.5rem;">
+        </div>
+
            
         <!-- CHAMP PHOTO -->
         <!-- CHAMP PHOTO -->

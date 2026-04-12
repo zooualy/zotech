@@ -21,8 +21,14 @@ function selectionnerType(type) {
 
     if (type === 'article') {
         document.getElementById('champ-contenu').style.display = 'block'
-    } else if (type === 'video') {
+  } else if (type === 'video') {
         document.getElementById('champ-video').style.display = 'block'
+        
+        // Écouter le lien pour afficher/cacher miniature TikTok
+        document.getElementById('pub-video').addEventListener('input', function() {
+            const estTikTok = this.value.includes('tiktok.com')
+            document.getElementById('champ-miniature-tiktok').style.display = estTikTok ? 'block' : 'none'
+        })
     } else if (type === 'photo') {
         document.getElementById('champ-photo').style.display = 'block'
     }
@@ -92,9 +98,10 @@ async function publierContenu() {
         return
     }
 
-    let contenu = ''
-    let url_video = ''
-    let url_image = ''
+   let contenu = ''
+let url_video = ''
+let url_image = ''
+let urlMiniatureTikTok = ''
 
     if (typeActuel === 'article') {
         const texteContenu = document.getElementById('pub-contenu').value.trim()
@@ -109,6 +116,28 @@ async function publierContenu() {
             afficherMessagePub('erreur', '❌ Le lien de la vidéo est obligatoire !')
             return
         }
+        const estTikTok = lienVideo.includes('tiktok.com')
+
+if (estTikTok) {
+    const fichierMiniature = document.getElementById('pub-miniature-tiktok').files[0]
+    console.log('Fichier miniature:', fichierMiniature)
+    console.log('Est TikTok:', estTikTok)
+    if (fichierMiniature) {
+        const nomMiniature = `miniature_${user.id}_${Date.now()}`
+        const { error: errMiniature } = await supabaseClient.storage
+            .from('photo')
+            .upload(nomMiniature, fichierMiniature, { upsert: true })
+
+        if (!errMiniature) {
+            const { data: urlMini } = supabaseClient.storage
+                .from('photo')
+                .getPublicUrl(nomMiniature)
+            urlMiniatureTikTok = urlMini.publicUrl
+        }
+    }
+}
+   
+
         url_video = convertirYoutube(lienVideo)
     } else if (typeActuel === 'photo') {
         const fichiers = document.getElementById('pub-image').files
@@ -172,23 +201,24 @@ async function publierContenu() {
 
     const { data, error } = await supabaseClient
         .from('articles')
-        .insert([{
-            titre: titre,
-            description: description,
-            contenu: contenu,
-            tag: tag,
-            emoji: emoji,
-            auteur: user.user_metadata.pseudo || user.email,
-            username_auteur: user.user_metadata.username || '',
-            user_id: user.id,
-            type_contenu: typeActuel,
-            url_video: url_video,
-            url_image: url_image,
-            url_couverture: url_couverture,
-            featured: false,
-            tags_personnes: tagsPersonnes.join(','),
-            hashtags: tagsHashtags.join(',')
-        }])
+    .insert([{
+    titre: titre,
+    description: description,
+    contenu: contenu,
+    tag: tag,
+    emoji: emoji,
+    auteur: user.user_metadata.pseudo || user.email,
+    username_auteur: user.user_metadata.username || '',
+    user_id: user.id,
+    type_contenu: typeActuel,
+    url_video: url_video,
+    url_image: url_image,
+    url_couverture: url_couverture,
+    url_miniature_tiktok: urlMiniatureTikTok || '',
+    featured: false,
+    tags_personnes: tagsPersonnes.join(','),
+    hashtags: tagsHashtags.join(',')
+}])    
 .select() 
     if (error) {
         afficherMessagePub('erreur', '❌ Erreur : ' + error.message)
@@ -685,4 +715,17 @@ function convertirTexteEnHTML(texte) {
         .replace(/<li>/g, '<ul><li>')
         .replace(/<\/li>/g, '</li></ul>')
         .replace(/<\/ul>\n<ul>/g, '')
+}
+
+function previewMiniature(input) {
+    const file = input.files[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (e) => {
+        const preview = document.getElementById('preview-miniature')
+        preview.src = e.target.result
+        preview.style.display = 'block'
+        document.getElementById('upload-zone-miniature').style.display = 'none'
+    }
+    reader.readAsDataURL(file)
 }

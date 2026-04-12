@@ -10,10 +10,18 @@ function creerCarte(article) {
         } else if (article.url_video.includes('youtu.be/')) {
             videoId = article.url_video.split('youtu.be/')[1].split('?')[0]
         }
+    const estTikTok = article.url_video.includes('tiktok.com')
         const thumbnail = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : ''
-        imageHtml = thumbnail
-            ? `<div class="card-image" style="background-image:url(${thumbnail}); background-size:cover; background-position:center;"></div>`
-            : `<div class="card-image">🎥</div>`
+        
+        if (estTikTok && article.url_miniature_tiktok) {
+            imageHtml = `<div class="card-image" style="background-image:url(${article.url_miniature_tiktok}); background-size:cover; background-position:center;"></div>`
+        } else if (estTikTok) {
+            imageHtml = `<div class="card-image" style="background:#000; display:flex; align-items:center; justify-content:center; font-size:2rem;">🎵</div>`
+        } else {
+            imageHtml = thumbnail
+                ? `<div class="card-image" style="background-image:url(${thumbnail}); background-size:cover; background-position:center;"></div>`
+                : `<div class="card-image">🎥</div>`
+        }   
     } else if (article.type_contenu === 'photo' && article.url_image) {
         const premierePhoto = article.url_image.split(',')[0]
         imageHtml = `<div class="card-image" style="background-image:url(${premierePhoto}); background-size:cover; background-position:center;"></div>`
