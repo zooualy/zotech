@@ -180,6 +180,7 @@ async function mettreAJourNavbar(user) {
         `
         navAuth.style.display = 'flex'
     }
+    window.addEventListener('load', verifierSession)
 }
 
 // ===== RÉINITIALISER FORMULAIRE =====

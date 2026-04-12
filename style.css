@@ -2201,25 +2201,25 @@ footer {
         max-height: 220px !important;
     }
 
-    .carousel-track .card-content {
-    padding: 0.75rem 1rem !important;
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: flex-end !important;
-    justify-content: space-between !important;
-}
-
-.carousel-track .card-actions {
-    flex-direction: column !important;
-    gap: 0.3rem !important;
-    margin-top: 0 !important;
-}
-
-.carousel-track .card-action-btn {
-    width: 30px !important;
-    height: 30px !important;
-    font-size: 0.75rem !important;
-}
+        .carousel-track .card-content {
+            padding: 0.75rem 1rem !important;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: flex-end !important;
+            justify-content: space-between !important;
+        }
+    
+        .carousel-track .card-actions {
+            flex-direction: column !important;
+            gap: 0.3rem !important;
+            margin-top: 0 !important;
+        }
+    
+        .carousel-track .card-action-btn {
+            width: 30px !important;
+            height: 30px !important;
+            font-size: 0.75rem !important;
+        }
 }
 
 @media (max-width: 768px) and (orientation: landscape) {
@@ -3444,7 +3444,7 @@ footer {
 /* ===== MOBILE ===== */
 @media (max-width: 768px) {
     .nav-auth {
-        display: none !important;
+        display: flex !important;
     }
 
     .navbar {
