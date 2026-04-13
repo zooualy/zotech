@@ -1,5 +1,12 @@
 // ===== SPLASH SCREEN =====
 window.addEventListener('DOMContentLoaded', () => {
+    // Afficher seulement une fois par session
+   if (sessionStorage.getItem('splash_done')) {
+        const splash = document.getElementById('splash-screen')
+        if (splash) splash.style.display = 'none'
+        return
+    }
+    sessionStorage.setItem('splash_done', 'true')
     setTimeout(() => {
         const logo = document.getElementById('splash-logo')
         const title = document.getElementById('splash-title')

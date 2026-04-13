@@ -84,13 +84,21 @@
         <div id="non-connecte" style="display:none; text-align:center; padding: 5rem 2rem;">
             <div style="font-size: 4rem; margin-bottom: 1rem;">🔐</div>
             <h2>Tu dois être connecté pour publier</h2>
-            <p style="color: #a0a0b0; margin: 1rem 0 2rem;">Crée un compte gratuit pour partager ton contenu avec la
-                communauté ZoTech</p>
-            <button class="btn-primary" onclick="ouvrirModal('inscription')">Créer un compte</button>
+            <p style="color: #a0a0b0; margin: 1rem 0 2rem;">Connecte-toi ou crée un compte gratuit pour partager ton contenu
+                avec la communauté ZoTech</p>
+            <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+                <button class="btn-primary" onclick="ouvrirModal('connexion')">
+                    <i class="fa-solid fa-right-to-bracket"></i> Se connecter
+                </button>
+                <button class="btn-primary" style="background:transparent; border:1px solid #7c3aed; color:#7c3aed;"
+                    onclick="ouvrirModal('inscription')">
+                    <i class="fa-solid fa-user-plus"></i> Créer un compte
+                </button>
+            </div>
         </div>
 
         <!-- FORMULAIRE PUBLICATION -->
-        <div id="form-publier">
+        <div id="form-publier" style="display: none;">
             <h1>✍️ Publier un contenu</h1>
             <p class="publier-subtitle">Partage tes connaissances avec la communauté ZoTech</p>
 
@@ -105,7 +113,7 @@
             <button class="type-btn" id="type-photo" onclick="selectionnerType('photo')">
                 <i class="fa-solid fa-image"></i> Photo
             </button>
-                </div>
+                
             </div>
 
             <!-- CHAMPS COMMUNS -->
@@ -254,10 +262,12 @@
                     <input type="checkbox" id="pub-est-pub" style="width:18px; height:18px; accent-color:#7c3aed;">
                     <span>📢 Marquer comme <strong>Publicité</strong> — Ne s'affichera pas dans les profils</span>
                 </label>
+
+                    <button class="btn-primary btn-publier" onclick="publierContenu()">
+                        🚀 Publier maintenant
+                    </button>
             </div>
-            <button class="btn-primary btn-publier" onclick="publierContenu()">
-                🚀 Publier maintenant
-            </button>
+        
 
         </div>
     </div>
@@ -368,11 +378,10 @@
 </div>
 <script src="mobile.js"></script>
 <script src="confirm.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="auth.js"></script>
-    <script src="script.js"></script>
-    <script src="publier.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script src="publier.js"></script>
+<script src="script.js"></script>
 <script src="recherche.js"></script>
 <script src="notifications.js"></script>
 <script src="toast.js"></script>

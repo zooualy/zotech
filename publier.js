@@ -265,17 +265,19 @@ function afficherMessagePub(type, texte) {
     msg.style.color = type === 'succes' ? '#1D9E75' : '#e24b4a'
     msg.style.display = 'block'
 }
-
 // ===== VÉRIFIER CONNEXION AU CHARGEMENT =====
-window.addEventListener('load', async () => {
+window.addEventListener('DOMContentLoaded', async () => {
     const { data } = await supabaseClient.auth.getSession()
+    
     if (!data.session) {
         document.getElementById('form-publier').style.display = 'none'
         document.getElementById('non-connecte').style.display = 'block'
         return
     }
 
-    // Afficher option pub si admin
+    document.getElementById('form-publier').style.display = 'block'
+    document.getElementById('non-connecte').style.display = 'none'
+
     const { data: profil } = await supabaseClient
         .from('profils')
         .select('est_admin')
@@ -287,6 +289,7 @@ window.addEventListener('load', async () => {
         if (champPub) champPub.style.display = 'block'
     }
 })
+
 
 // ===== PRÉVISUALISATION MULTI-PHOTOS =====
 let photosSelectionnees = []
