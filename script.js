@@ -1,3 +1,32 @@
+// ===== SPLASH SCREEN =====
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const logo = document.getElementById('splash-logo')
+        const title = document.getElementById('splash-title')
+        const tagline = document.getElementById('splash-tagline')
+        
+        if (logo) {
+            logo.style.opacity = '1'
+            logo.style.transform = 'scale(1) rotate(0deg)'
+        }
+        if (title) {
+            title.style.opacity = '1'
+            title.style.transform = 'translateY(0)'
+        }
+        if (tagline) {
+            tagline.style.opacity = '1'
+        }
+    }, 100)
+
+    setTimeout(() => {
+        const splash = document.getElementById('splash-screen')
+        if (splash) {
+            splash.style.transition = 'opacity 0.6s ease'
+            splash.style.opacity = '0'
+            setTimeout(() => splash.style.display = 'none', 600)
+        }
+    }, 2500)
+})
 // ===== CRÉER UNE CARTE ARTICLE =====
 function creerCarte(article) {
     let imageHtml = ''
@@ -58,7 +87,7 @@ function creerCarte(article) {
                     </a>
                     <span style="font-size:0.8rem;">📅 ${article.date || new Date(article.created_at).toLocaleDateString('fr-FR')}</span>
                 </div>
-                <div class="card-actions">
+          <div class="card-actions">
                     <button class="card-action-btn" onclick="event.stopPropagation(); partagerArticle(${article.id}, '${article.titre.replace(/'/g, "\\'")}')">
                         <i class="fa-solid fa-link"></i>
                     </button>
@@ -68,7 +97,7 @@ function creerCarte(article) {
                     <button class="card-action-btn" onclick="event.stopPropagation(); signalerContenu('article', ${article.id})" style="color:#e24b4a;">
                         <i class="fa-solid fa-flag"></i>
                     </button>
-                </div>
+                </div>     
             </div>
         </div>
     `

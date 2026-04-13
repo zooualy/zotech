@@ -2119,12 +2119,10 @@ footer {
 .carousel-track .card-footer {
     display: none !important;
 }
-
 .carousel-track .card-actions {
-    display: flex !important;
-    gap: 0.5rem !important;
-    margin-top: 0.75rem !important;
+    display: none !important;
 }
+
 
 .carousel-track .card-action-btn {
     background: rgba(255, 255, 255, 0.2) !important;
@@ -3994,4 +3992,15 @@ body {
 
 .stat:hover .stat-label {
     color: #a78bfa;
+}
+@keyframes splashLogo {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
