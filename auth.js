@@ -173,13 +173,19 @@ async function mettreAJourNavbar(user) {
         `
         navAuth.style.display = 'flex'
 
-    } else {
-        navAuth.innerHTML = `
-            <button class="btn-login" onclick="ouvrirModal('connexion')">Connexion</button>
-            <button class="btn-signup" onclick="ouvrirModal('inscription')">S'inscrire</button>
-        `
-        navAuth.style.display = 'flex'
-    }
+   } else {
+        const estMobile = window.innerWidth <= 768
+        if (!estMobile) {
+            navAuth.innerHTML = `
+                <button class="btn-login" onclick="ouvrirModal('connexion')">Connexion</button>
+                <button class="btn-signup" onclick="ouvrirModal('inscription')">S'inscrire</button>
+            `
+            navAuth.style.display = 'flex'
+        } else {
+            navAuth.innerHTML = ''
+            navAuth.style.display = 'none'
+        }
+    } 
     window.addEventListener('load', verifierSession)
 }
 

@@ -31,7 +31,7 @@ body {
     text-align: center;
     padding: 5rem 2rem;
     background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
-        url('/media/logo site choix .jpeg');
+        url('/media/favicon.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
