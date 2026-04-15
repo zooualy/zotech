@@ -2051,7 +2051,61 @@ footer {
 }
 
 
-/* ===== CAROUSEL À LA UNE ===== */
+/* ===== CAROUSEL RESPONSIVE ===== */
+.carousel-track .card-image {
+    height: 450px !important;
+    width: 100% !important;
+    background-size: cover !important;
+    background-position: top center !important;
+    border-radius: 0 !important;
+}
+
+.carousel-track .card-image img {
+    height: 450px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+    object-position: top center !important;
+}
+
+/* Mobile portrait */
+@media (max-width: 480px) {
+    .carousel-track .card-image,
+    .carousel-track .card-image img {
+        height: 260px !important;
+    }
+}
+
+/* Mobile paysage */
+@media (max-width: 768px) and (orientation: landscape) {
+    .carousel-track .card-image,
+    .carousel-track .card-image img {
+        height: 220px !important;
+    }
+}
+
+/* iPad portrait */
+@media (min-width: 481px) and (max-width: 768px) {
+    .carousel-track .card-image,
+    .carousel-track .card-image img {
+        height: 320px !important;
+    }
+}
+
+/* iPad paysage */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .carousel-track .card-image,
+    .carousel-track .card-image img {
+        height: 400px !important;
+    }
+}
+
+/* Grand écran */
+@media (min-width: 1400px) {
+    .carousel-track .card-image,
+    .carousel-track .card-image img {
+        height: 580px !important;
+    }
+}/* ===== CAROUSEL À LA UNE ===== */
 .carousel-wrapper {
     position: relative;
     overflow: hidden;
@@ -2104,8 +2158,6 @@ footer {
 }
 
 .carousel-track .card-desc {
-    color: rgba(255, 255, 255, 0.85) !important;
-    font-size: 0.9rem !important;
     display: none !important;
 }
 
@@ -2119,15 +2171,9 @@ footer {
 .carousel-track .card-footer {
     display: none !important;
 }
+
 .carousel-track .card-actions {
     display: none !important;
-}
-
-
-.carousel-track .card-action-btn {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    color: white !important;
 }
 
 .carousel-btn {
@@ -2186,53 +2232,14 @@ footer {
     width: 24px;
     border-radius: 4px;
 }
+
+/* Mobile portrait */
 @media (max-width: 480px) {
-    .carousel-track .card-image {
-        height: 180px !important;
-    }
 
+    .carousel-track .card-image,
     .carousel-track .card-image img {
-        height: 180px !important;
+        height: 260px !important;
     }
-
-    .carousel-wrapper {
-        max-height: 220px !important;
-    }
-
-        .carousel-track .card-content {
-            padding: 0.75rem 1rem !important;
-            display: flex !important;
-            flex-direction: row !important;
-            align-items: flex-end !important;
-            justify-content: space-between !important;
-        }
-    
-        .carousel-track .card-actions {
-            flex-direction: column !important;
-            gap: 0.3rem !important;
-            margin-top: 0 !important;
-        }
-    
-        .carousel-track .card-action-btn {
-            width: 30px !important;
-            height: 30px !important;
-            font-size: 0.75rem !important;
-        }
-}
-
-@media (max-width: 768px) and (orientation: landscape) {
-    .carousel-track .card-image {
-        height: 160px !important;
-    }
-
-    .carousel-track .card-image img {
-        height: 160px !important;
-    }
-
-    .carousel-wrapper {
-        max-height: 200px !important;
-    }
-}
 
     .carousel-track .card-title {
         font-size: 1rem !important;
@@ -2247,45 +2254,41 @@ footer {
         height: 32px !important;
         font-size: 0.85rem !important;
     }
+}
 
+/* Mobile paysage */
+@media (max-width: 768px) and (orientation: landscape) {
 
+    .carousel-track .card-image,
+    .carousel-track .card-image img {
+        height: 220px !important;
+    }
+}
+
+/* iPad portrait */
 @media (min-width: 481px) and (max-width: 768px) {
-    .carousel-track .card-image {
-        height: 280px !important;
-    }
 
+    .carousel-track .card-image,
     .carousel-track .card-image img {
-        height: 280px !important;
+        height: 320px !important;
     }
 }
 
+/* iPad paysage */
 @media (min-width: 769px) and (max-width: 1024px) {
-    .carousel-track .card-image {
-        height: 380px !important;
-    }
 
+    .carousel-track .card-image,
     .carousel-track .card-image img {
-        height: 380px !important;
+        height: 400px !important;
     }
 }
 
-@media (min-width: 1025px) and (max-width: 1399px) {
-    .carousel-track .card-image {
-        height: 450px !important;
-    }
-
-    .carousel-track .card-image img {
-        height: 450px !important;
-    }
-}
-
+/* Grand écran */
 @media (min-width: 1400px) {
-    .carousel-track .card-image {
-        height: 550px !important;
-    }
 
+    .carousel-track .card-image,
     .carousel-track .card-image img {
-        height: 550px !important;
+        height: 580px !important;
     }
 }
 /* ===== TITRES DE SECTIONS STYLÉS ===== */
