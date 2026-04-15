@@ -254,10 +254,39 @@ if (estTikTok) {
 
     // Envoyer notifications push aux abonnés
     try {
-        const { data: abonnes } = await supabaseClient
-            .from('abonnements')
-            .select('cible_id')
-            .eq('abonne_id', user.id)
+        // Vérifier si admin
+        const { data: monProfil } = await supabaseClient
+            .from('profils')
+            .select('est_admin')
+            .eq('user_id', user.id)
+            .single()
+
+        let tokens = []
+
+        if (monProfil?.est_admin) {
+            // Admin → envoyer à tous les utilisateurs
+            const { data: tousLesProfils } = await supabaseClient
+                .from('profils')
+                .select('fcm_token')
+                .not('fcm_token', 'is', null)
+            tokens = tousLesProfils?.map(p => p.fcm_token).filter(Boolean) || []
+        } else {
+            // Utilisateur normal → envoyer aux abonnés seulement
+            const { data: abonnes } = await supabaseClient
+                .from('abonnements')
+                .select('cible_id')
+                .eq('abonne_id', user.id)
+
+            if (abonnes && abonnes.length > 0) {
+                const cibleIds = abonnes.map(a => a.cible_id)
+                const { data: profils } = await supabaseClient
+                    .from('profils')
+                    .select('fcm_token')
+                    .in('user_id', cibleIds)
+                    .not('fcm_token', 'is', null)
+                tokens = profils?.map(p => p.fcm_token).filter(Boolean) || []
+            }
+        }
 
         if (abonnes && abonnes.length > 0) {
             const cibleIds = abonnes.map(a => a.cible_id)
@@ -266,8 +295,6 @@ if (estTikTok) {
                 .select('fcm_token')
                 .in('user_id', cibleIds)
                 .not('fcm_token', 'is', null)
-
-            const tokens = profils?.map(p => p.fcm_token).filter(Boolean) || []
 
             if (tokens.length > 0) {
                 await fetch('/api/send-notification', {
