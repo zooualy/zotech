@@ -252,6 +252,40 @@ if (estTikTok) {
         }
     }
 
+    // Envoyer notifications push aux abonnés
+    try {
+        const { data: abonnes } = await supabaseClient
+            .from('abonnements')
+            .select('cible_id')
+            .eq('abonne_id', user.id)
+
+        if (abonnes && abonnes.length > 0) {
+            const cibleIds = abonnes.map(a => a.cible_id)
+            const { data: profils } = await supabaseClient
+                .from('profils')
+                .select('fcm_token')
+                .in('user_id', cibleIds)
+                .not('fcm_token', 'is', null)
+
+            const tokens = profils?.map(p => p.fcm_token).filter(Boolean) || []
+
+            if (tokens.length > 0) {
+                await fetch('/api/send-notification', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        tokens: tokens,
+                        titre: `${user.user_metadata.pseudo || 'Quelqu\'un'} a publié`,
+                        corps: titre,
+                        lien: `https://zotech.technology/article.html?id=${data?.[0]?.id}&src=supabase`
+                    })
+                })
+            }
+        }
+    } catch (e) {
+        console.log('Erreur notifications:', e)
+    }
+
     afficherMessagePub('succes', '✅ Contenu publié avec succès !')
     setTimeout(() => {
         window.location.href = 'index.html'
