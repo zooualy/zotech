@@ -1,29 +1,16 @@
 // ===== FIREBASE NOTIFICATIONS PUSH =====
 const VAPID_KEY = "BB0jOeneUNU_vZsJR0TnU7ogOi0dDdUsZhehfSPl1Cee7TsdSHZ5pvS6A5UgubGUojXS1gZ3MhZFbxe_lEISrBU"
 
-// ===== AFFICHER POPUP =====
-function afficherPopupNotifications() {
-    const overlay = document.getElementById('notif-permission-overlay')
-    if (!overlay) return
-    overlay.style.display = 'flex'
-}
-
-// ===== REFUSER =====
-function refuserNotifications() {
-    const overlay = document.getElementById('notif-permission-overlay')
-    if (overlay) overlay.style.display = 'none'
-
-    // Compter les refus
-    const compteur = parseInt(localStorage.getItem('notif_refus_compteur') || '0')
-    localStorage.setItem('notif_refus_compteur', compteur + 1)
-}
-
-// ===== ACCEPTER =====
-async function accepterNotifications() {
-    const overlay = document.getElementById('notif-permission-overlay')
-    if (overlay) overlay.style.display = 'none'
-
+async function initialiserNotifications() {
     try {
+        const { data: sessionData } = await supabaseClient.auth.getSession()
+        if (!sessionData.session) return
+
+        // Si déjà accepté → ne plus demander
+        const dejaAcceptee = localStorage.getItem('notif_acceptee')
+        if (dejaAcceptee) return
+
+        // Demander permission directement au navigateur
         const permission = await Notification.requestPermission()
         if (permission !== 'granted') return
 
@@ -39,21 +26,18 @@ async function accepterNotifications() {
             appId: "1:765175644752:web:0389acbd1be21a62c10755"
         })
 
-      // Enregistrer le Service Worker d'abord
-const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js')
-await navigator.serviceWorker.ready
+        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        await navigator.serviceWorker.ready
 
-const messaging = getMessaging(app)
-const token = await getToken(messaging, { 
-    vapidKey: VAPID_KEY,
-    serviceWorkerRegistration: registration
-})
+        const messaging = getMessaging(app)
+        const token = await getToken(messaging, { 
+            vapidKey: VAPID_KEY,
+            serviceWorkerRegistration: registration
+        })
 
         if (!token) return
 
-        const { data: sessionData } = await supabaseClient.auth.getSession()
-        const userId = sessionData.session?.user?.id
-        if (!userId) return
+        const userId = sessionData.session.user.id
 
         await supabaseClient
             .from('profils')
@@ -61,7 +45,6 @@ const token = await getToken(messaging, {
             .eq('user_id', userId)
 
         localStorage.setItem('notif_acceptee', 'true')
-        localStorage.removeItem('notif_refus_compteur')
         console.log('✅ Token FCM sauvegardé !')
 
     } catch (error) {
@@ -69,21 +52,9 @@ const token = await getToken(messaging, {
     }
 }
 
-// ===== LANCER =====
+// Lancer après 3 secondes
 window.addEventListener('load', async () => {
     const { data: sessionData } = await supabaseClient.auth.getSession()
     if (!sessionData.session) return
-
-    // Si déjà accepté → ne plus afficher
-    const dejaAcceptee = localStorage.getItem('notif_acceptee')
-    if (dejaAcceptee) return
-
-    // Si refusé → afficher seulement toutes les 2 connexions
-    const compteur = parseInt(localStorage.getItem('notif_refus_compteur') || '0')
-    if (compteur > 0 && compteur % 2 !== 0) {
-        localStorage.setItem('notif_refus_compteur', compteur + 1)
-        return
-    }
-
-    setTimeout(afficherPopupNotifications, 3000)
+    setTimeout(initialiserNotifications, 3000)
 })
