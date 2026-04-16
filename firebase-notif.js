@@ -39,8 +39,15 @@ async function accepterNotifications() {
             appId: "1:765175644752:web:0389acbd1be21a62c10755"
         })
 
-        const messaging = getMessaging(app)
-        const token = await getToken(messaging, { vapidKey: VAPID_KEY })
+      // Enregistrer le Service Worker d'abord
+const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js')
+await navigator.serviceWorker.ready
+
+const messaging = getMessaging(app)
+const token = await getToken(messaging, { 
+    vapidKey: VAPID_KEY,
+    serviceWorkerRegistration: registration
+})
 
         if (!token) return
 
