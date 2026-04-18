@@ -252,9 +252,8 @@ if (estTikTok) {
         }
     }
 
-    // Envoyer notifications push aux abonnés
+ // Envoyer notifications push aux abonnés
     try {
-        // Vérifier si admin
         const { data: monProfil } = await supabaseClient
             .from('profils')
             .select('est_admin')
@@ -288,27 +287,23 @@ if (estTikTok) {
             }
         }
 
-        if (abonnes && abonnes.length > 0) {
-            const cibleIds = abonnes.map(a => a.cible_id)
-            const { data: profils } = await supabaseClient
-                .from('profils')
-                .select('fcm_token')
-                .in('user_id', cibleIds)
-                .not('fcm_token', 'is', null)
+        console.log('Tokens trouvés:', tokens.length)
 
-            if (tokens.length > 0) {
-                await fetch('/api/send-notification', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        tokens: tokens,
-                        titre: `${user.user_metadata.pseudo || 'Quelqu\'un'} a publié`,
-                        corps: titre,
-                        lien: `https://zotech.technology/article.html?id=${data?.[0]?.id}&src=supabase`
-                    })
+        if (tokens.length > 0) {
+            const reponse = await fetch('/api/send-notification', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    tokens: tokens,
+                    titre: `${user.user_metadata.pseudo || 'Quelqu\'un'} a publié`,
+                    corps: titre,
+                    lien: `https://zotech.technology/article.html?id=${data?.[0]?.id}&src=supabase`
                 })
-            }
+            })
+            const resultat = await reponse.json()
+            console.log('Résultat notification:', resultat)
         }
+
     } catch (e) {
         console.log('Erreur notifications:', e)
     }
