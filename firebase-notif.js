@@ -18,7 +18,7 @@ window.addEventListener('load', async () => {
 
     // Si déjà accepté → ne plus afficher
     const dejaAcceptee = localStorage.getItem('notif_acceptee')
-    if (dejaAcceptee) return
+if (dejaAcceptee === 'true' || dejaAcceptee === 'refuse') return
 
     // Afficher popup après 3 secondes
     setTimeout(() => {
@@ -31,6 +31,7 @@ function refuserNotifications() {
     document.getElementById('notif-permission-overlay').style.display = 'none'
     const compteur = parseInt(localStorage.getItem('notif_refus_compteur') || '0')
     localStorage.setItem('notif_refus_compteur', compteur + 1)
+    localStorage.setItem('notif_acceptee', 'refuse')
 }
 
 // ===== ACCEPTER =====
