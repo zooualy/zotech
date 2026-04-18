@@ -286,6 +286,28 @@
 </div>
     </div>
 </div>
+
+<!-- POPUP NOTIFICATIONS -->
+<div id="notif-permission-overlay"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center;">
+    <div
+        style="background:#1a1d2e; border:1px solid #252840; border-radius:20px; padding:2rem; max-width:380px; width:90%; text-align:center;">
+        <div style="font-size:3rem; margin-bottom:1rem;">🔔</div>
+        <h3 style="color:#ffffff; margin-bottom:0.5rem;">Activer les notifications</h3>
+        <p style="color:#94a3b8; font-size:0.9rem; margin-bottom:1.5rem;">Reçois les dernières publications et
+            actualités de ZoTech en temps réel !</p>
+        <div style="display:flex; gap:0.75rem; justify-content:center;">
+            <button onclick="accepterNotifications()"
+                style="background:linear-gradient(135deg, #7c3aed, #3b82f6); color:white; border:none; padding:0.75rem 1.5rem; border-radius:10px; cursor:pointer; font-weight:600;">
+                <i class="fa-solid fa-bell"></i> Activer
+            </button>
+            <button onclick="refuserNotifications()"
+                style="background:transparent; color:#94a3b8; border:1px solid #252840; padding:0.75rem 1.5rem; border-radius:10px; cursor:pointer;">
+                Plus tard
+            </button>
+        </div>
+    </div>
+</div>
 <!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>

@@ -16,23 +16,42 @@ window.addEventListener('load', async () => {
     const { data: sessionData } = await supabaseClient.auth.getSession()
     if (!sessionData.session) return
 
+    // Si déjà accepté → ne plus afficher
     const dejaAcceptee = localStorage.getItem('notif_acceptee')
     if (dejaAcceptee) return
 
-    setTimeout(demanderNotifications, 3000)
+    // Afficher popup après 3 secondes
+    setTimeout(() => {
+        document.getElementById('notif-permission-overlay').style.display = 'flex'
+    }, 3000)
 })
 
-async function demanderNotifications() {
+// ===== REFUSER =====
+function refuserNotifications() {
+    document.getElementById('notif-permission-overlay').style.display = 'none'
+    const compteur = parseInt(localStorage.getItem('notif_refus_compteur') || '0')
+    localStorage.setItem('notif_refus_compteur', compteur + 1)
+}
+
+// ===== ACCEPTER =====
+async function accepterNotifications() {
+    document.getElementById('notif-permission-overlay').style.display = 'none'
+
     try {
         const permission = await Notification.requestPermission()
-        if (permission !== 'granted') return
+        if (permission !== 'granted') {
+            alert('Tu dois autoriser les notifications dans les paramètres de ton navigateur !')
+            return
+        }
 
         await initialiserToken()
+
     } catch (err) {
         console.error('Erreur permission:', err)
     }
 }
 
+// ===== INITIALISER TOKEN =====
 async function initialiserToken() {
     try {
         const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js')
@@ -61,8 +80,6 @@ async function initialiserToken() {
             console.log('❌ Pas de token')
             return
         }
-
-        console.log('✅ Token:', token)
 
         const { data: sessionData } = await supabaseClient.auth.getSession()
         const userId = sessionData.session?.user?.id
