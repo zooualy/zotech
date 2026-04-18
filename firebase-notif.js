@@ -16,7 +16,7 @@ window.addEventListener('load', async () => {
 
     const dejaTraite = localStorage.getItem('notif_traite')
     if (dejaTraite) return
-
+console.log('iOS détecté:', estIOS(), navigator.userAgent)
     // iOS → message spécial
     if (estIOS()) {
         setTimeout(() => {
