@@ -38,7 +38,10 @@ async function accepterNotifications() {
     document.getElementById('notif-permission-overlay').style.display = 'none'
 
     try {
-        const permission = await Notification.requestPermission()
+        let permission = Notification.permission
+if (permission === 'default') {
+    permission = await Notification.requestPermission()
+}
         if (permission !== 'granted') {
             alert('Tu dois autoriser les notifications dans les paramètres de ton navigateur !')
             return
