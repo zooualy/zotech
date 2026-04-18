@@ -57,9 +57,18 @@ async function accepterNotifications() {
     localStorage.setItem('notif_traite', 'accepte')
 
     try {
-        const permission = await Notification.requestPermission()
-        if (permission !== 'granted') return
-        await initialiserToken()
+    try {
+    const permission = await Notification.requestPermission()
+    console.log('Permission:', permission)
+    if (permission !== 'granted') {
+        alert('Autorise les notifications dans les paramètres Chrome !')
+        return
+    }
+    await initialiserToken()
+} catch(e) {
+    console.error('Erreur permission:', e)
+    alert('Erreur: ' + e.message)
+}    
     } catch (err) {
         console.error('Erreur permission:', err)
     }
