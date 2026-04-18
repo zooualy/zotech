@@ -59,7 +59,11 @@ async function accepterNotifications() {
 
     try {
     try {
-    const permission = await Notification.requestPermission()
+   if (typeof Notification === 'undefined') {
+    alert('Les notifications ne sont pas supportées sur ce navigateur. Ajoutez ZoTech à votre écran d\'accueil depuis Safari !')
+    return
+}
+const permission = await Notification.requestPermission()
     console.log('Permission:', permission)
     if (permission !== 'granted') {
         alert('Autorise les notifications dans les paramètres Chrome !')
