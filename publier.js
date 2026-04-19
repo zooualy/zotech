@@ -287,18 +287,16 @@ if (estTikTok) {
             }
         }
 
-        console.log('Tokens trouvés:', tokens.length)
+   console.log('Tokens trouvés:', tokens.length)
 
         if (tokens.length > 0) {
             const reponse = await fetch('https://boitsdxdjmyxyfpihyaf.supabase.co/functions/v1/send-notification', {
-    method: 'POST',
-    headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaXRzZHhkam15eHlmcGloeWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMxODI5NDIsImV4cCI6MjA1ODc1ODk0Mn0.fr9Y4pLKkD0TBiXL8coLhFBhfxwDeCoT9BVAXZ8u9gg`,
-        'apikey': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaXRzZHhkam15eHlmcGloeWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMxODI5NDIsImV4cCI6MjA1ODc1ODk0Mn0.fr9Y4pLKkD0TBiXL8coLhFBhfxwDeCoT9BVAXZ8u9gg`
-    },
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaXRzZHhkam15eHlmcGloeWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMxODI5NDIsImV4cCI6MjA1ODc1ODk0Mn0.fr9Y4pLKkD0TBiXL8coLhFBhfxwDeCoT9BVAXZ8u9gg`,
+                    'apikey': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaXRzZHhkam15eHlmcGloeWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMxODI5NDIsImV4cCI6MjA1ODc1ODk0Mn0.fr9Y4pLKkD0TBiXL8coLhFBhfxwDeCoT9BVAXZ8u9gg`
+                },
                 body: JSON.stringify({
                     tokens: tokens,
                     titre: `${user.user_metadata.pseudo || 'Quelqu\'un'} a publié`,
