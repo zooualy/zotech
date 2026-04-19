@@ -294,8 +294,8 @@ if (estTikTok) {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaXRzZHhkam15eHlmcGloeWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMxODI5NDIsImV4cCI6MjA1ODc1ODk0Mn0.fr9Y4pLKkD0TBiXL8coLhFBhfxwDeCoT9BVAXZ8u9gg`,
-                    'apikey': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaXRzZHhkam15eHlmcGloeWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMxODI5NDIsImV4cCI6MjA1ODc1ODk0Mn0.fr9Y4pLKkD0TBiXL8coLhFBhfxwDeCoT9BVAXZ8u9gg`
+                    'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaXRzZHhkam15eHlmcGloeWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyMTkxNTUsImV4cCI6MjA4OTc5NTE1NX0.g-K8T85MyaNTnfUpqhb-sbB47CJysW8_TZ6P_gx5djs`,
+                    'apikey': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaXRzZHhkam15eHlmcGloeWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyMTkxNTUsImV4cCI6MjA4OTc5NTE1NX0.g-K8T85MyaNTnfUpqhb-sbB47CJysW8_TZ6P_gx5djs`
                 },
                 body: JSON.stringify({
                     tokens: tokens,
