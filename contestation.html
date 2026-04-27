@@ -118,6 +118,19 @@
             margin-bottom: 1rem;
         }
     </style>
+
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(async function (OneSignal) {
+            await OneSignal.init({
+                appId: "a5ca0631-9ccc-40e1-8105-c37b2b425789",
+                allowLocalhostAsSecureOrigin: true,
+                serviceWorkerParam: { scope: "/" },
+                serviceWorkerPath: "OneSignalSDKWorker.js"
+            });
+        });
+    </script>
 </head>
 <body>
 
