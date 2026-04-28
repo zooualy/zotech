@@ -252,7 +252,7 @@ if (estTikTok) {
         }
     }
 
- // Envoyer notifications push aux abonnés
+ // Envoyer notifications push via OneSignal
     try {
         const { data: monProfil } = await supabaseClient
             .from('profils')
@@ -260,53 +260,36 @@ if (estTikTok) {
             .eq('user_id', user.id)
             .single()
 
-        let tokens = []
+        let body = {
+            titre: `${user.user_metadata.pseudo || 'Quelqu\'un'} a publié`,
+            corps: titre,
+            lien: `https://www.zotech.technology/article.html?id=${data?.[0]?.id}&src=supabase`
+        }
 
         if (monProfil?.est_admin) {
-            // Admin → envoyer à tous les utilisateurs
-            const { data: tousLesProfils } = await supabaseClient
-                .from('profils')
-                .select('fcm_token')
-                .not('fcm_token', 'is', null)
-            tokens = tousLesProfils?.map(p => p.fcm_token).filter(Boolean) || []
+            body.segments = ['Subscribed Users']
         } else {
-            // Utilisateur normal → envoyer aux abonnés seulement
             const { data: abonnes } = await supabaseClient
                 .from('abonnements')
                 .select('cible_id')
                 .eq('abonne_id', user.id)
 
             if (abonnes && abonnes.length > 0) {
-                const cibleIds = abonnes.map(a => a.cible_id)
-                const { data: profils } = await supabaseClient
-                    .from('profils')
-                    .select('fcm_token')
-                    .in('user_id', cibleIds)
-                    .not('fcm_token', 'is', null)
-                tokens = profils?.map(p => p.fcm_token).filter(Boolean) || []
+                body.externalUserIds = abonnes.map(a => a.cible_id)
             }
         }
 
-   console.log('Tokens trouvés:', tokens.length)
-
-        if (tokens.length > 0) {
-            const reponse = await fetch('https://boitsdxdjmyxyfpihyaf.supabase.co/functions/v1/send-notification', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaXRzZHhkam15eHlmcGloeWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyMTkxNTUsImV4cCI6MjA4OTc5NTE1NX0.g-K8T85MyaNTnfUpqhb-sbB47CJysW8_TZ6P_gx5djs`,
-                    'apikey': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaXRzZHhkam15eHlmcGloeWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyMTkxNTUsImV4cCI6MjA4OTc5NTE1NX0.g-K8T85MyaNTnfUpqhb-sbB47CJysW8_TZ6P_gx5djs`
-                },
-                body: JSON.stringify({
-                    tokens: tokens,
-                    titre: `${user.user_metadata.pseudo || 'Quelqu\'un'} a publié`,
-                    corps: titre,
-                    lien: `https://zotech.technology/article.html?id=${data?.[0]?.id}&src=supabase`
-                })
-            })
-            const resultat = await reponse.json()
-            console.log('Résultat notification:', resultat)
-        }
+        const reponse = await fetch('https://boitsdxdjmyxyfpihyaf.supabase.co/functions/v1/send-notification', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaXRzZHhkam15eHlmcGloeWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyMTkxNTUsImV4cCI6MjA4OTc5NTE1NX0.g-K8T85MyaNTnfUpqhb-sbB47CJysW8_TZ6P_gx5djs`,
+                'apikey': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaXRzZHhkam15eHlmcGloeWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyMTkxNTUsImV4cCI6MjA4OTc5NTE1NX0.g-K8T85MyaNTnfUpqhb-sbB47CJysW8_TZ6P_gx5djs`
+            },
+            body: JSON.stringify(body)
+        })
+        const resultat = await reponse.json()
+        console.log('Résultat notification:', resultat)
 
     } catch (e) {
         console.log('Erreur notifications:', e)
